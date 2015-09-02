@@ -25,6 +25,7 @@
         //  <!--common-->
         $cs->registerCssFile($themeUrl . '/css/style.css');
         $cs->registerCssFile($themeUrl . '/css/style-responsive.css');
+        $cs->registerCssFile($themeUrl . '/css/custom.css');
         ?>
 
 
@@ -48,7 +49,7 @@
                 <!-- header section start-->
                 <?php $this->renderPartial('//layouts/_headerBar'); ?>
                 <!-- header section end-->
-                
+
                 <!--body wrapper start-->
                 <div class="wrapper">
                 <?php echo $content; ?>
@@ -63,7 +64,7 @@
             </div>
             <!-- main content end-->
         </section>
-        
+
         <?php
         $cs_pos_end = CClientScript::POS_END;
 
@@ -75,11 +76,11 @@
         $cs->registerScriptFile($themeUrl . '/js/bootstrap.min.js', $cs_pos_end);
         $cs->registerScriptFile($themeUrl . '/js/modernizr.min.js', $cs_pos_end);
         $cs->registerScriptFile($themeUrl . '/js/jquery.nicescroll.js', $cs_pos_end);
-        
+
         /* <!--icheck--> */
         $cs->registerScriptFile($themeUrl . '/js/iCheck/jquery.icheck.js', $cs_pos_end);
         $cs->registerScriptFile($themeUrl . '/js/icheck-init.js', $cs_pos_end);
-        
+
         /* <!--common scripts for all pages--> */
         $cs->registerScriptFile($themeUrl . '/js/scripts.js', $cs_pos_end);
         ?>

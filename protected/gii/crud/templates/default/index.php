@@ -23,14 +23,20 @@ echo "\$cs->registerScriptFile(\$themeUrl . '/js/datatables/jquery.dataTables.js
 echo "\$cs->registerScriptFile(\$themeUrl . '/js/datatables/dataTables.bootstrap.js', \$cs_pos_end);\n";
 ?>
 ?>
-<?php 
+<?php
 $restrict = $this->giiGenerateHiddenFields();
 $count=0;
 $activeFields = $this->giiGenerateActiveInActiveFields();
 ?>
 <div class="row">
     <div class="btn-group pull-right panel-body">
-                    <?php echo "<?php"; ?>
+
+                </div>
+    <div class="col-sm-12">
+        <section class="panel">
+            <header class="panel-heading">
+                Manage <?php echo ($this->modelClass); ?>
+                <?php echo "<?php"; ?>
         $this->widget(
                 'application.components.MyTbButton', array(
             'label' => 'Create <?php echo $this->modelClass; ?>',
@@ -42,15 +48,10 @@ $activeFields = $this->giiGenerateActiveInActiveFields();
                 )
         );
         ?>
-                </div>
-    <div class="col-sm-12">
-        <section class="panel">
-            <header class="panel-heading">
-                Manage <?php echo ($this->modelClass); ?>
             </header>
             <div class="panel-body">
                 <div class="adv-table editable-table ">
-                
+
 <?php echo "<?php\n"; ?>
         $gridColumns = array(
 <?php
