@@ -1,9 +1,9 @@
 <?php
 
 /**
- * This is the model class for table "{{timing}}".
+ * This is the model class for table "{{event_lists}}".
  *
- * The followings are the available columns in table '{{timing}}':
+ * The followings are the available columns in table '{{event_lists}}':
  * @property integer $timing_id
  * @property integer $event_id
  * @property string $timing_start
@@ -17,14 +17,14 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class Timing extends CActiveRecord
+class EventLists extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return '{{timing}}';
+		return '{{event_lists}}';
 	}
 
 	/**
@@ -79,7 +79,7 @@ class Timing extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Timing the static model class
+	 * @return EventLists the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
