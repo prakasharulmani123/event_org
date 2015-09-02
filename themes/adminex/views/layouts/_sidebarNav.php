@@ -46,6 +46,7 @@
                     'items' => array(
                         array('label' => '<span>Role</span>', 'url' => array('/site/role/index'), 'visible' => '1', 'active' => '0'),
                         array('label' => '<span>User</span>', 'url' => array('/site/user/index'), 'visible' => '1', 'active' => '0'),
+                        array('label' => '<span>Event</span>', 'url' => array('/site/event/index'), 'visible' => '1', 'active' => '0'),
                     ),
                 ),
             ),

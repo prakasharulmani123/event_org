@@ -81,10 +81,27 @@ class UserController extends Controller {
 
         if (isset($_POST['User'])) {
             $model->attributes = $_POST['User'];
-            if ($model->save()) {
-                Yii::app()->user->setFlash('success', 'User Created Successfully!!!');
-                $this->redirect(array('/site/user/index'));
-            }
+            if ($model->validate()):
+                $password = Myclass::getRandomString(9);
+                $model->password_hash = Myclass::encrypt($password);
+
+                $model->save(false);
+                if (!empty($model->user_email)):
+                    $mail = new Sendmail();
+                    $nextstep_url = Yii::app()->createAbsoluteUrl('/site/default/login');
+                    $subject = "Registraion Mail From - " . SITENAME;
+                    $trans_array = array(
+                        "{NAME}" => $model->user_firstname,
+                        "{USERNAME}" => $model->username,
+                        "{PASSWORD}" => $password,
+                        "{NEXTSTEPURL}" => $nextstep_url,
+                    );
+                    $message = $mail->getMessage('registration', $trans_array);
+                    $mail->send($model->user_email, $subject, $message);
+                    Yii::app()->user->setFlash('success', 'User Created Successfully!!!');
+                    $this->redirect(array('index'));
+                endif;
+            endif;
         }
 
         $this->render('create', array(

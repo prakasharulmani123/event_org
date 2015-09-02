@@ -44,7 +44,7 @@ $activeFields = $this->giiGenerateActiveInActiveFields();
             'url' => array('/site/<?php echo strtolower($this->modelClass); ?>/create'),
             'buttonType' => 'link',
             'context' => 'success',
-            'htmlOptions' => array('class' => 'pull-right'),
+            'htmlOptions' => array('class' => 'pull-right btn-sm mtm5'),
                 )
         );
         ?>

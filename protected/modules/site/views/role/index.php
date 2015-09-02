@@ -14,8 +14,10 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/jquery.dataTables.js', $cs_p
 $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $cs_pos_end);
 ?>
 <div class="row">
-    <div class="btn-group panel-body">
-        <?php
+    <div class="col-sm-12">
+        <section class="panel">
+            <header class="panel-heading">
+                Manage Role <?php
         $this->widget(
                 'application.components.MyTbButton', array(
             'label' => 'Create Role',
@@ -23,16 +25,10 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
             'url' => array('/site/role/create'),
             'buttonType' => 'link',
             'context' => 'success',
-            'htmlOptions' => array('class' => 'pull-right'),
+            'htmlOptions' => array('class' => 'pull-right btn-sm mtm5'),
                 )
         );
-        ?>
-    </div>
-
-    <div class="col-sm-12">
-        <section class="panel">
-            <header class="panel-heading">
-                Manage Role            </header>
+        ?></header>
             <div class="panel-body">
                 <div class="adv-table editable-table ">
                     <?php

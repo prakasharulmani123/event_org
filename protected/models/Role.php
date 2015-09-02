@@ -25,6 +25,13 @@ class Role extends CActiveRecord {
         return '{{role}}';
     }
 
+    public function scopes() {
+        $alias = $this->getTableAlias(false, false);
+        return array(
+            'active' => array('condition' => "$alias.status = '1'")
+        );
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -125,7 +132,7 @@ class Role extends CActiveRecord {
         $criteria->compare('created_by', $this->created_by, true);
         $criteria->compare('modified_at', $this->modified_at);
         $criteria->compare('modified_by', $this->modified_by);
-        
+
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
             'pagination' => array(
@@ -137,4 +144,15 @@ class Role extends CActiveRecord {
     public static function roleList() {
         return CHtml::listData(self::model()->findAll(), 'role_id', 'role_name');
     }
+
+    public static function roleUsers() {
+        $roleUsers = array();
+        foreach (self::model()->findAll() as $role)
+            if (!empty($role->users))
+                foreach ($role->users as $user)
+                    $roleUsers[$role->role_name][$user->user_id] = $user->user_firstname;
+            
+        return $roleUsers;
+    }
+
 }
