@@ -104,11 +104,11 @@ $('.timepicker-24').timepicker({
 
 //timepicker end
 
-//colorpicker start
-
-$('.colorpicker-default').colorpicker({
-    format: 'hex'
-});
-$('.colorpicker-rgba').colorpicker();
+////colorpicker start
+//
+////$('.colorpicker-default').colorpicker({
+////    format: 'hex'
+////});
+////$('.colorpicker-rgba').colorpicker();
 
 //colorpicker end

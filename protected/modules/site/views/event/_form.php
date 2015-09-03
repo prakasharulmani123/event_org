@@ -41,19 +41,40 @@
                         <div class="form-group">
                             <?php echo $form->labelEx($model, 'event_users', array('class' => 'col-sm-2 control-label')); ?>
                             <div class="col-md-5">
-                                <?php echo $form->dropDownList($model, 'event_users', $roleUsers, array('multiple'=>"multiple", 'class'=>"multi-select-group")); ?>
+                                <?php echo $form->dropDownList($model, 'event_users', $roleUsers, array('multiple' => "multiple", 'class' => "multi-select-group")); ?>
                                 <?php echo $form->error($model, 'event_users'); ?>
                             </div>
                         </div>
-
                         <div class="form-group">
-                            <?php echo $form->labelEx($model, 'status', array('class' => 'col-sm-2 control-label')); ?>
-                            <div class="col-sm-5">
-                                <?php echo $form->checkBox($model, 'status', array('class' => '')); ?>
-                                <?php echo $form->error($model, 'status'); ?>
+                            <?php echo $form->labelEx($model, 'Event List(s)', array('class' => 'col-sm-2 control-label')); ?>
+                            <div class="col-md-7">
+                                <?php
+                                $this->widget('ext.widgets.tabularinput.XTabularInput', array(
+                                    'models' => $lists,
+                                    'containerTagName' => 'table',
+                                    'containerCssClass' => 'tabular-container table',
+                                    'headerTagName' => 'thead',
+                                    'header' => '<tr>
+                                            <td>' . CHtml::activeLabelEX(EventLists::model(), 'list_title') . '</td>
+                                            <td>' . CHtml::activeLabelEX(EventLists::model(), 'timing_start') . '</td>
+                                            <td>' . CHtml::activeLabelEX(EventLists::model(), 'timing_end') . '</td>
+                                            <td></td>
+                                        </tr>
+                                    ',
+                                    'inputContainerTagName' => 'tbody',
+                                    'inputTagName' => 'tr',
+                                    'inputView' => '_tabularInputAsTable',
+                                    'inputUrl' => $this->createUrl('/site/event/addTabularInputsAsTable'),
+                                    'addTemplate' => '<tbody><tr><td colspan="3">{link}</td></tr></tbody>',
+                                    'addLabel' => Yii::t('ui', 'Add new row'),
+                                    'addHtmlOptions' => array('class' => 'blue pill full-width'),
+                                    'removeTemplate' => '<td>{link}</td>',
+                                    'removeLabel' => '<i class="fa fa-2x fa-trash-o"></i>',
+                                    'removeHtmlOptions' => array('class' => 'red pill'),
+                                ));
+                                ?>
                             </div>
                         </div>
-
                     </div><!-- /.box-body -->
                     <div class="box-footer">
                         <div class="form-group">
@@ -78,6 +99,19 @@ $cs_pos_end = CClientScript::POS_END;
 $cs->registerCoreScript('jquery');
 $cs->registerScriptFile($themeUrl . '/js/jquery-multi-select/js/jquery.multi-select.js', $cs_pos_end);
 $cs->registerScriptFile($themeUrl . '/js/jquery-multi-select/js/jquery.quicksearch.js', $cs_pos_end);
-$cs->registerScriptFile($themeUrl . '/js/multi-select-init.js', $cs_pos_end);
+$cs->registerScriptFile($themeUrl . '/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js', $cs_pos_end);
+$cs->registerScriptFile($themeUrl . '/js/bootstrap-timepicker/js/bootstrap-timepicker.js', $cs_pos_end);
+
+$js = <<< EOD
+$(function(){
+    $('.multi-select-group').multiSelect({
+        selectableOptgroup: true
+    });
+    $('.timepicker-default').timepicker();
+});
+EOD;
+$cs->registerScript('_event_form', $js);
 $cs->registerCssFile($themeUrl . '/js/jquery-multi-select/css/multi-select.css');
+$cs->registerCssFile($themeUrl . '/js/bootstrap-timepicker/css/timepicker.css');
+
 ?>

@@ -20,6 +20,11 @@ class EventController extends Controller {
         return array(
             'pdf' => 'application.components.actions.pdf',
             'download' => 'application.components.actions.download',
+            'addTabularInputsAsTable' => array(
+                'class' => 'application.extensions.actions.XTabularInputAction',
+                'modelName' => 'EventLists',
+                'viewName' => '_tabularInputAsTable',
+            ),
         );
     }
 
@@ -31,11 +36,11 @@ class EventController extends Controller {
     public function accessRules() {
         return array(
             array('allow', // allow all users to perform 'index' and 'view' actions
-                'actions' => array(''),
+                'actions' => array(),
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('index', 'view', 'create', 'update', 'admin', 'delete', 'pdf', 'download'),
+                'actions' => array('index', 'view', 'create', 'update', 'admin', 'delete', 'pdf', 'download','addTabularInputsAsTable'),
                 'expression' => 'UserIdentity::checkAccess()',
                 'users' => array('@'),
             ),
@@ -75,6 +80,7 @@ class EventController extends Controller {
      */
     public function actionCreate() {
         $model = new Event;
+        $lists[0] = new EventLists;
 
         // Uncomment the following line if AJAX validation is needed
         $this->performAjaxValidation($model);
@@ -90,9 +96,7 @@ class EventController extends Controller {
             }
         }
 
-        $this->render('create', array(
-            'model' => $model,
-        ));
+        $this->render('create', compact('model', 'lists'));
     }
 
     /**

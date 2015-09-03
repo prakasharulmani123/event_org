@@ -29,9 +29,6 @@ $count=0;
 $activeFields = $this->giiGenerateActiveInActiveFields();
 ?>
 <div class="row">
-    <div class="btn-group pull-right panel-body">
-
-                </div>
     <div class="col-sm-12">
         <section class="panel">
             <header class="panel-heading">

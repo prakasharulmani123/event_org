@@ -14,9 +14,6 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/jquery.dataTables.js', $cs_p
 $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $cs_pos_end);
 ?>
 <div class="row">
-    <div class="btn-group pull-right panel-body">
-
-                </div>
     <div class="col-sm-12">
         <section class="panel">
             <header class="panel-heading">

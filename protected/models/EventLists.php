@@ -6,6 +6,7 @@
  * The followings are the available columns in table '{{event_lists}}':
  * @property integer $timing_id
  * @property integer $event_id
+ * @property string $list_title
  * @property string $timing_start
  * @property string $timing_end
  * @property string $timing_notes
@@ -35,12 +36,13 @@ class EventLists extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('event_id, timing_start, timing_end', 'required'),
+			array('event_id, list_title, timing_start, timing_end', 'required'),
 			array('event_id, modified_at, modified_by', 'numerical', 'integerOnly'=>true),
+			array('list_title', 'length', 'max'=>255),
 			array('timing_notes, created_at, created_by', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('timing_id, event_id, timing_start, timing_end, timing_notes, created_at, created_by, modified_at, modified_by', 'safe', 'on'=>'search'),
+			array('timing_id, event_id, list_title, timing_start, timing_end, timing_notes, created_at, created_by, modified_at, modified_by', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -64,6 +66,7 @@ class EventLists extends CActiveRecord
 		return array(
 			'timing_id' => 'Timing',
 			'event_id' => 'Event',
+			'list_title' => 'List Title',
 			'timing_start' => 'Timing Start',
 			'timing_end' => 'Timing End',
 			'timing_notes' => 'Timing Notes',
@@ -91,6 +94,7 @@ class EventLists extends CActiveRecord
 
 		$criteria->compare('timing_id',$this->timing_id);
 		$criteria->compare('event_id',$this->event_id);
+		$criteria->compare('list_title',$this->list_title,true);
 		$criteria->compare('timing_start',$this->timing_start,true);
 		$criteria->compare('timing_end',$this->timing_end,true);
 		$criteria->compare('timing_notes',$this->timing_notes,true);
