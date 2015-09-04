@@ -39,7 +39,8 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
                         'user_lastname',
                         array(
                             'name' => 'role_id',
-                            'value' => '$data->role->role_name'
+                            'value' => '$data->role->role_name',
+                            'filter' => Role::roleList()
                         ),
                         /*
                           'user_email',

@@ -4,7 +4,7 @@
 </td>
 <td>
     <div class="input-group bootstrap-timepicker">
-        <?php echo CHtml::activeTextField($model, "[$index]timing_start", array("class" => "form-control timepicker-default", 'id' => "timing_start$index")); ?>
+        <?php echo CHtml::activeTextField($model, "[$index]timing_start", array("class" => "form-control timepicker-default", 'id' => "timing_start$index",'size'=>200)); ?>
         <span class="input-group-btn">
             <button class="btn btn-default" type="button"><i class="fa fa-clock-o"></i></button>
         </span>
@@ -13,12 +13,16 @@
 </td>
 <td>
     <div class="input-group bootstrap-timepicker">
-        <?php echo CHtml::activeTextField($model, "[$index]timing_end", array("class" => "form-control timepicker-default", 'id' => "timing_end$index"/*, 'value' => date('h:i A', strtotime($model->timing_end))*/)); ?>
+        <?php echo CHtml::activeTextField($model, "[$index]timing_end", array("class" => "form-control timepicker-default", 'id' => "timing_end$index",'size'=>200)); ?>
         <span class="input-group-btn">
             <button class="btn btn-default" type="button"><i class="fa fa-clock-o"></i></button>
         </span>
     </div>
     <?php echo CHtml::error($model, "[$index]timing_end"); ?>
+</td>
+<td>
+    <?php echo CHtml::activeTextArea($model, "[$index]timing_notes", array("class" => "form-control", 'size' => '350', 'cols' => '300')); ?>
+    <?php echo CHtml::error($model, "[$index]timing_notes"); ?>
 </td>
 
                                 

@@ -34,7 +34,7 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
                     <?php
                     $gridColumns = array(
                         'role_name',
-                        'rank',
+//                        'rank',
                         array(
                             'name' => 'status',
                             'htmlOptions' => array('style' => 'width: 180px;;text-align:center', 'vAlign' => 'middle'),
@@ -42,6 +42,7 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
                             'value' => function($data) {
                         echo ($data->status == 1) ? '<i class="fa fa-circle text-green"></i>' : '<i class="fa fa-circle text-red"></i>';
                     },
+                            'filter'=> array('1' => 'Active', '0' => 'In-active'),
                         ),
                         array(
                             'header' => 'Actions',

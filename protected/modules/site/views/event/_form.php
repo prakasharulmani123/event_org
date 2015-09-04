@@ -67,6 +67,7 @@
                                             <td>' . CHtml::activeLabelEX(EventLists::model(), 'list_title') . '</td>
                                             <td>' . CHtml::activeLabelEX(EventLists::model(), 'timing_start') . '</td>
                                             <td>' . CHtml::activeLabelEX(EventLists::model(), 'timing_end') . '</td>
+                                            <td>' . CHtml::activeLabelEX(EventLists::model(), 'timing_notes') . '</td>
                                             <td></td>
                                         </tr>
                                     ',

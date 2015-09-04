@@ -39,7 +39,7 @@ class User extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('username, user_firstname, role_id, user_email', 'required'),
+            array('username, user_firstname, role_id, user_email, user_phone', 'required'),
             array('username, user_email', 'unique'),
             array('role_id, modified_at, modified_by', 'numerical', 'integerOnly' => true),
             array('username, user_firstname, user_lastname, user_phone', 'length', 'max' => 50),
