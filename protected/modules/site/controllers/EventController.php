@@ -40,7 +40,7 @@ class EventController extends Controller {
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('index', 'view', 'create', 'update', 'admin', 'delete', 'pdf', 'download','addTabularInputsAsTable'),
+                'actions' => array('index', 'view', 'create', 'update', 'admin', 'delete', 'pdf', 'download', 'addTabularInputsAsTable'),
                 'expression' => 'UserIdentity::checkAccess()',
                 'users' => array('@'),
             ),
@@ -60,9 +60,15 @@ class EventController extends Controller {
      */
     public function actionView($id) {
         $model = $this->loadModel($id);
+        $criteria = new CDbCriteria;
+        $criteria->compare('event_id', $model->event_id);
+        $list_dataprovider =  new CActiveDataProvider(EventLists::model(), array(
+            'criteria' => $criteria,
+            'pagination' => false
+        ));
 
         $export = isset($_REQUEST['export']) && $_REQUEST['export'] == 'PDF';
-        $compact = compact('model', 'export');
+        $compact = compact('model', 'export', 'list_dataprovider');
         if ($export) {
             $mPDF1 = Yii::app()->ePdf->mpdf();
             $stylesheet = $this->pdfStyles();
@@ -83,14 +89,18 @@ class EventController extends Controller {
         $lists[0] = new EventLists;
 
         // Uncomment the following line if AJAX validation is needed
-        $this->performAjaxValidation($model);
+        $this->performAjaxValidation(array($model, $lists[0]));
+//        $this->MyperformAjaxValidation($model, $lists[0]);
 
         if (isset($_POST['Event'])) {
-            echo "<pre>";
-            print_r($_POST);
-            exit;
             $model->attributes = $_POST['Event'];
             if ($model->save()) {
+                foreach ($_POST['EventLists'] as $key => $list_vals) {
+                    $list = new EventLists;
+                    $list->event_id = $model->event_id;
+                    $list->attributes = $list_vals;
+                    $list->save();
+                }
                 Yii::app()->user->setFlash('success', 'Event Created Successfully!!!');
                 $this->redirect(array('/site/event/index'));
             }
@@ -106,21 +116,27 @@ class EventController extends Controller {
      */
     public function actionUpdate($id) {
         $model = $this->loadModel($id);
+        $lists = $model->eventlists;
 
         // Uncomment the following line if AJAX validation is needed
-        $this->performAjaxValidation($model);
+        $this->performAjaxValidation(array($model));
 
         if (isset($_POST['Event'])) {
             $model->attributes = $_POST['Event'];
             if ($model->save()) {
+                EventLists::model()->deleteAllByAttributes(array('event_id' => $model->event_id));
+                foreach ($_POST['EventLists'] as $key => $list_vals) {
+                    $list = new EventLists;
+                    $list->event_id = $model->event_id;
+                    $list->attributes = $list_vals;
+                    $list->save();
+                }
                 Yii::app()->user->setFlash('success', 'Event Updated Successfully!!!');
                 $this->redirect(array('/site/event/index'));
             }
         }
 
-        $this->render('update', array(
-            'model' => $model,
-        ));
+        $this->render('update', compact('model', 'lists'));
     }
 
     /**
@@ -195,6 +211,22 @@ class EventController extends Controller {
         if (isset($_POST['ajax']) && $_POST['ajax'] === 'event-form') {
             echo CActiveForm::validate($model);
             Yii::app()->end();
+        }
+    }
+
+    protected function MyperformAjaxValidation($model, $tabularModal) {
+        if (isset($_POST['ajax']) /*&& $_POST['ajax'] === 'event-form'*/) {
+            $model = CJSON::decode(CActiveForm::validate($model));
+            $cupons = CJSON::decode(CActiveForm::validateTabular($tabularModal));
+            echo CJSON::encode(CMap::mergeArray($model, $cupons));
+            Yii::App()->end();
+
+//            $tabort = array("{", "}");
+//            $tmp_model = str_replace($tabort, "", CActiveForm::validate($model));
+//            $tmp_cupons = str_replace($tabort, "", CActiveForm::validateTabular($tabularModal));
+//
+//            echo "{" . $tmp_model . ", " . $tmp_cupons . "}";
+//            Yii::app()->end();
         }
     }
 

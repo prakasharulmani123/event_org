@@ -33,7 +33,7 @@
                         <div class="form-group">
                             <?php echo $form->labelEx($model, 'event_date', array('class' => 'col-sm-2 control-label')); ?>
                             <div class="col-sm-5">
-                                <?php echo $form->textField($model, 'event_date', array('class' => 'form-control')); ?>
+                                <?php echo $form->textField($model, 'event_date', array('class' => 'form-control form-control-inline input-medium default-date-picker')); ?>
                                 <?php echo $form->error($model, 'event_date'); ?>
                             </div>
                         </div>
@@ -41,7 +41,16 @@
                         <div class="form-group">
                             <?php echo $form->labelEx($model, 'event_users', array('class' => 'col-sm-2 control-label')); ?>
                             <div class="col-md-5">
-                                <?php echo $form->dropDownList($model, 'event_users', $roleUsers, array('multiple' => "multiple", 'class' => "multi-select-group")); ?>
+                                <?php 
+                                $selected = array();
+                                if(!empty($model->event_users)){
+                                    $userlists = CJSON::decode($model->event_users);
+                                    foreach ($userlists as $value) {
+                                        $selected[$value] = array('selected' => 'selected');
+                                    }
+                                }
+                                ?>
+                                <?php echo $form->dropDownList($model, 'event_users', $roleUsers, array('multiple' => "multiple", 'class' => "multi-select-group", 'options' => $selected)); ?>
                                 <?php echo $form->error($model, 'event_users'); ?>
                             </div>
                         </div>
@@ -52,7 +61,7 @@
                                 $this->widget('ext.widgets.tabularinput.XTabularInput', array(
                                     'models' => $lists,
                                     'containerTagName' => 'table',
-                                    'containerCssClass' => 'tabular-container table',
+                                    'containerCssClass' => 'table',
                                     'headerTagName' => 'thead',
                                     'header' => '<tr>
                                             <td>' . CHtml::activeLabelEX(EventLists::model(), 'list_title') . '</td>
@@ -66,7 +75,7 @@
                                     'inputView' => '_tabularInputAsTable',
                                     'inputUrl' => $this->createUrl('/site/event/addTabularInputsAsTable'),
                                     'addTemplate' => '<tbody><tr><td colspan="3">{link}</td></tr></tbody>',
-                                    'addLabel' => Yii::t('ui', 'Add new row'),
+                                    'addLabel' => '<i class="fa fa-1x fa-plus"></i> '.Yii::t('ui', 'Add new list'),
                                     'addHtmlOptions' => array('class' => 'blue pill full-width'),
                                     'removeTemplate' => '<td>{link}</td>',
                                     'removeLabel' => '<i class="fa fa-2x fa-trash-o"></i>',
@@ -99,6 +108,7 @@ $cs_pos_end = CClientScript::POS_END;
 $cs->registerCoreScript('jquery');
 $cs->registerScriptFile($themeUrl . '/js/jquery-multi-select/js/jquery.multi-select.js', $cs_pos_end);
 $cs->registerScriptFile($themeUrl . '/js/jquery-multi-select/js/jquery.quicksearch.js', $cs_pos_end);
+//$cs->registerScriptFile($themeUrl . '/js/bootstrap-datepicker/js/bootstrap-datepicker.js', $cs_pos_end);
 $cs->registerScriptFile($themeUrl . '/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js', $cs_pos_end);
 $cs->registerScriptFile($themeUrl . '/js/bootstrap-timepicker/js/bootstrap-timepicker.js', $cs_pos_end);
 
@@ -107,11 +117,15 @@ $(function(){
     $('.multi-select-group').multiSelect({
         selectableOptgroup: true
     });
+    $('.default-date-picker').datepicker({
+        format: 'yyyy-mm-dd'
+    });
     $('.timepicker-default').timepicker();
 });
 EOD;
 $cs->registerScript('_event_form', $js);
 $cs->registerCssFile($themeUrl . '/js/jquery-multi-select/css/multi-select.css');
+//$cs->registerCssFile($themeUrl . '/js/bootstrap-datepicker/css/datepicker-custom.css');
 $cs->registerCssFile($themeUrl . '/js/bootstrap-timepicker/css/timepicker.css');
 
 ?>

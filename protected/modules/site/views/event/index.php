@@ -36,7 +36,7 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
         $gridColumns = array(
 		'event_name',
 		'event_date',
-		'event_users',
+		'userlist',
 		array(
                 'name' => 'status',
                 'htmlOptions' => array('style' => 'width: 180px;;text-align:center', 'vAlign' => 'middle'),

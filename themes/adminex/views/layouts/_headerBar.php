@@ -184,8 +184,8 @@
             </li>-->
             <li>
                 <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <img src="images/photos/user-avatar.png" alt="" />
-                    John Doe
+                    <?php // echo CHtml::image("{$this->themeUrl}/images/photos/user-avatar.png", '', array()); ?>
+                    <?php echo Yii::app()->user->name; ?>
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-usermenu pull-right">

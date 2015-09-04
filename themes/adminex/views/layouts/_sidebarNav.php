@@ -17,7 +17,8 @@
         <!-- visible to small devices only -->
         <div class="visible-xs hidden-sm hidden-md hidden-lg">
             <div class="media logged-user">
-                <img alt="" src="images/photos/user-avatar.png" class="media-object">
+                <?php // echo CHtml::image("{$this->themeUrl}/images/photos/user-avatar.png", '', array('class'=>"media-object")); ?>
+                <!--<img alt="" src="images/photos/user-avatar.png" class="media-object">-->
                 <div class="media-body">
                     <h4><a href="#">John Doe</a></h4>
                     <span>"Hello There..."</span>

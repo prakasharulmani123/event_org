@@ -74,11 +74,11 @@ class Controller extends CController {
     public function pdfStyles() {
         $theme_path = Yii::getPathOfAlias('webroot.themes.' . Yii::app()->theme->name);
         $stylesheet = file_get_contents($theme_path . '/lib/bs3/css/bootstrap.css');
-        $stylesheet .= file_get_contents($theme_path . '/css/font-awesome/css/font-awesome.css');
-        $stylesheet .= file_get_contents($theme_path . '/css/AdminLTE.css');
+//        $stylesheet .= file_get_contents($theme_path . '/css/font-awesome/css/font-awesome.css');
+//        $stylesheet .= file_get_contents($theme_path . '/css/AdminLTE.css');
 //        $stylesheet .= file_get_contents('http://code.ionicframework.com/ionicons/1.5.2/css/ionicons.min.css');
-        $stylesheet .= file_get_contents($theme_path . '/css/custom.css');
-        $stylesheet .= file_get_contents($theme_path . '/css/pdf.css');
+//        $stylesheet .= file_get_contents($theme_path . '/css/custom.css');
+//        $stylesheet .= file_get_contents($theme_path . '/css/pdf.css');
         return $stylesheet;
     }
 
