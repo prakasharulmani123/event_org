@@ -60,15 +60,18 @@ class EventController extends Controller {
      */
     public function actionView($id) {
         $model = $this->loadModel($id);
-        $criteria = new CDbCriteria;
-        $criteria->compare('event_id', $model->event_id);
-        $list_dataprovider =  new CActiveDataProvider(EventLists::model(), array(
-            'criteria' => $criteria,
-            'pagination' => false
-        ));
-
+        $history_model = new EventHistory;
+        $this->performAjaxValidation($history_model);
+        
+        if(Yii::app()->request->isPostRequest){
+            $history_model->attributes = $_POST['EventHistory'];
+            if($history_model->save()){
+                Yii::app()->user->setFlash('success', 'Time modified Successfully!!!');
+                $this->refresh();
+            }
+        }
         $export = isset($_REQUEST['export']) && $_REQUEST['export'] == 'PDF';
-        $compact = compact('model', 'export', 'list_dataprovider');
+        $compact = compact('model', 'export', 'history_model');
         if ($export) {
             $mPDF1 = Yii::app()->ePdf->mpdf();
             $stylesheet = $this->pdfStyles();
@@ -172,6 +175,9 @@ class EventController extends Controller {
         if (isset($_GET['Event'])) {
             $model->attributes = $_GET['Event'];
         }
+        if (!UserIdentity::checkAdmin()) {
+            $model->search_users = array(Yii::app()->user->id);
+        }
         $this->render('index', compact('model'));
     }
 
@@ -208,14 +214,14 @@ class EventController extends Controller {
      * @param Event $model the model to be validated
      */
     protected function performAjaxValidation($model) {
-        if (isset($_POST['ajax']) && $_POST['ajax'] === 'event-form') {
+        if (isset($_POST['ajax']) /*&& $_POST['ajax'] === 'event-form'*/) {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
     }
 
     protected function MyperformAjaxValidation($model, $tabularModal) {
-        if (isset($_POST['ajax']) /*&& $_POST['ajax'] === 'event-form'*/) {
+        if (isset($_POST['ajax']) /* && $_POST['ajax'] === 'event-form' */) {
             $model = CJSON::decode(CActiveForm::validate($model));
             $cupons = CJSON::decode(CActiveForm::validateTabular($tabularModal));
             echo CJSON::encode(CMap::mergeArray($model, $cupons));

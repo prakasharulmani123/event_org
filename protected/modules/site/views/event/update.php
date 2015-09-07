@@ -2,7 +2,7 @@
 /* @var $this EventController */
 /* @var $model Event */
 
-$this->title='Update Events: '. $model->event_id;
+$this->title='Update Events: '. $model->event_name;
 $this->breadcrumbs=array(
 	'Events'=>array('index'),
 	'Update Events',

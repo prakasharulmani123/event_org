@@ -34,7 +34,7 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
                 <div class="adv-table editable-table ">
 
                     <?php
-                    $array_params = array(1,2);
+                    $array_params = array(1, 2);
                     $gridColumns = array(
                         'event_name',
                         array(
@@ -69,7 +69,7 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
 //                        'userlist',
                         array(
                             'name' => 'status',
-                            'htmlOptions' => array('style' => 'width: 180px;;text-align:center', 'vAlign' => 'middle'),
+                            'htmlOptions' => array('style' => 'width: 180px;text-align:center', 'vAlign' => 'middle'),
                             'type' => 'raw',
                             'value' => function($data) {
                         echo ($data->status == 1) ? '<i class="fa fa-circle text-green"></i>' : '<i class="fa fa-circle text-red"></i>';
@@ -79,11 +79,30 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
                         array(
                             'header' => 'Actions',
                             'class' => 'application.components.MyActionButtonColumn',
-                            'htmlOptions' => array('style' => 'width: 180px;;text-align:center', 'vAlign' => 'middle', 'class' => 'action_column'),
-                            'template' => '{view} {update} {delete}',
+                            'htmlOptions' => array('style' => 'width: 180px;text-align:center', 'vAlign' => 'middle', 'class' => 'action_column'),
+                            'template' => '{view} {update_b} {delete_b}',
                             'viewButtonIcon' => 'fa fa-eye',
-                            'updateButtonIcon' => 'fa fa-pencil',
-                            'deleteButtonIcon' => 'fa fa-trash-o',
+//                            'updateButtonIcon' => 'fa fa-pencil',
+//                            'deleteButtonIcon' => 'fa fa-trash-o',
+                            'buttons' => array(
+                                'update_b' => array(//the name {reply} must be same
+                                    'label' => '<i class="fa fa-pencil"></i>',
+                                    'options' => array(
+                                        'title' => 'Update',
+                                    ),
+                                    'url' => 'CHtml::normalizeUrl(array("/site/event/update/id/".rawurlencode($data->event_id)))',
+                                    'visible' => 'UserIdentity::checkAdmin()'
+                                ),
+                                'delete_b' => array(//the name {reply} must be same
+                                    'label' => '<i class="fa fa-trash-o"></i>',
+                                    'options' => array(
+                                        'title' => 'Delete',
+                                        'confirm' => 'Are you sure to delete?',
+                                    ),
+                                    'url' => 'CHtml::normalizeUrl(array("/site/event/delete/id/".rawurlencode($data->event_id)))',
+                                    'visible' => 'UserIdentity::checkAdmin()'
+                                ),
+                            )
                         )
                     );
 

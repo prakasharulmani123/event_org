@@ -56,7 +56,7 @@
                         </div>
                         <div class="form-group">
                             <?php echo $form->labelEx($model, 'Event List(s)', array('class' => 'col-sm-2 control-label')); ?>
-                            <div class="col-md-7">
+                            <div class="col-md-9">
                                 <?php
                                 $this->widget('ext.widgets.tabularinput.XTabularInput', array(
                                     'models' => $lists,

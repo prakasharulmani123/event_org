@@ -16,7 +16,7 @@ Yii::import('application.components.UserIdentity');
 class MyTbButton extends TbButton{
     
     public function init() {
-        $this->visible = UserIdentity::checkAccess();
+        $this->visible = $this->visible && UserIdentity::checkAccess();
         parent::init();
     }
 

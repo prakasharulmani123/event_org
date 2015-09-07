@@ -75,8 +75,8 @@ class UserIdentity extends CUserIdentity {
     public static function checkAdmin() {
         $return = false;
         if(isset(Yii::app()->user->id)){
-            $user = User::model()->find('id = :U', array(':U' => $id));
-            $return = $user->role == 1;
+            $user = User::model()->find('user_id = :U', array(':U' => Yii::app()->user->id));
+            $return = ($user->role_id == 1);
         }
         return $return;
     }

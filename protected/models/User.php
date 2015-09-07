@@ -137,4 +137,8 @@ class User extends RActiveRecord {
         }
         return parent::afterValidate();
     }
+    
+    public function getFullname() {
+        return $this->user_firstname.' '.$this->user_lastname;
+    }
 }

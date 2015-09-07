@@ -19,6 +19,7 @@
  */
 class Event extends RActiveRecord {
 
+    public $search_users;
 //    public $userlist;
     /**
      * @return string the associated database table name
@@ -96,6 +97,12 @@ class Event extends RActiveRecord {
         $criteria->compare('created_by', $this->created_by, true);
         $criteria->compare('modified_at', $this->modified_at);
         $criteria->compare('modified_by', $this->modified_by);
+        
+        if(!empty($this->search_users)){
+            foreach ($this->search_users as $search_user) {
+                $criteria->compare('event_users', '"'.$search_user.'"', true, 'OR');
+            }
+        }
 
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,

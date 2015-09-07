@@ -35,18 +35,19 @@
 
         <!--sidebar nav start-->
         <?php
+        $is_admin = UserIdentity::checkAdmin();
         $this->widget('application.components.MyMenu', array(
             'activateParents' => true,
             'encodeLabel' => false,
             'activateItems' => true,
             'items' => array(
-                array('label' => '<i class="fa fa-dashboard"></i> <span>Dashboard</span>', 'url' => array('/site/default/index')),
+                array('label' => '<i class="fa fa-dashboard"></i> <span>Dashboard</span>', 'url' => array('/site/default/index'), 'visible' => $is_admin),
                 array('label' => '<i class="fa fa-cog"></i> <span>Administration</span>', 'url' => '#',
                     'itemOptions' => array('class' => 'menu-list'),
                     'submenuOptions' => array('class' => 'sub-menu-list'),
                     'items' => array(
-                        array('label' => '<span>Role</span>', 'url' => array('/site/role/index'), 'visible' => '1', 'active' => '0'),
-                        array('label' => '<span>User</span>', 'url' => array('/site/user/index'), 'visible' => '1', 'active' => '0'),
+                        array('label' => '<span>Role</span>', 'url' => array('/site/role/index'), 'visible' => $is_admin, 'active' => '0'),
+                        array('label' => '<span>User</span>', 'url' => array('/site/user/index'), 'visible' => $is_admin, 'active' => '0'),
                         array('label' => '<span>Event</span>', 'url' => array('/site/event/index'), 'visible' => '1', 'active' => '0'),
                     ),
                 ),

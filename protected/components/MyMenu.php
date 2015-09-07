@@ -24,7 +24,6 @@ class MyMenu extends CMenu {
                             if(is_array($third_item['url'])){
                                 if(!in_array($_controller, $ignore_list) && !in_array($controller, $ignore_list)){
                                     $this->items[$key][$second_key][$third_key]['active'] = $_controller == $controller;
-                                    $this->items[$key][$second_key][$third_key]['visible'] = UserIdentity::checkAccess($_id, $controller, 'view');
                                 }
                             }
                             if (isset($third_item['items'])) {
@@ -32,7 +31,6 @@ class MyMenu extends CMenu {
                                     $controller = $this->splitController($fourth_value['url'][0]);
                                     if (!in_array($_controller, $ignore_list) && !in_array($controller, $ignore_list)) {
                                         $this->items[$key][$second_key][$third_key]['items'][$fourth_key]['visible'] = UserIdentity::checkAccess($_id, $controller, 'view');
-                                        $this->items[$key][$second_key][$third_key]['items'][$fourth_key]['active'] = $_controller == $controller;
                                     }
                                 }
                             }

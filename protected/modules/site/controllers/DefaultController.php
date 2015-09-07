@@ -74,7 +74,10 @@ class DefaultController extends Controller {
         if (isset($_POST['LoginForm']) && !isset($_POST['forgot'])) {
             $model->attributes = $_POST['LoginForm'];
             if ($model->validate() && $model->login()):
-                $this->goHome();
+                if(UserIdentity::checkAdmin())
+                    $this->goHome();
+                else
+                    $this->redirect(array('/site/event/index'));
             endif;
         }else if (isset($_POST['forgot'])) {
             $user = User::model()->findByAttributes(array('user_email' => $_POST['LoginForm']['email']));
