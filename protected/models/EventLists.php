@@ -18,7 +18,7 @@
  * The followings are the available model relations:
  * @property Event $event
  */
-class EventLists extends CActiveRecord {
+class EventLists extends RActiveRecord {
 
     /**
      * @return string the associated database table name
@@ -36,7 +36,7 @@ class EventLists extends CActiveRecord {
         return array(
             array('list_title, timing_start, timing_end', 'required'),
             array('event_id', 'required', 'on' => 'update'),
-            array('event_id, modified_at, modified_by', 'numerical', 'integerOnly' => true),
+            array('event_id, created_by, modified_by', 'numerical', 'integerOnly' => true),
             array('list_title', 'length', 'max' => 255),
             array('timing_notes, created_at, created_by', 'safe'),
             // The following rule is used by search().

@@ -52,14 +52,24 @@
 
                 <!--body wrapper start-->
                 <div class="wrapper">
-                <?php echo $content; ?>
+                    <?php if (isset($this->flashMessages)): ?>
+                        <?php foreach ($this->flashMessages as $key => $message) { ?>
+                            <div class="alert alert-<?php echo $key; ?> fade in">
+                                <button type="button" class="close close-sm" data-dismiss="alert">
+                                    <i class="fa fa-times"></i>
+                                </button>
+                                <?php echo $message; ?>
+                            </div>
+                        <?php } ?>
+                    <?php endif ?>
+                    <?php echo $content; ?>
                 </div>
                 <!--body wrapper end-->
 
                 <!--footer section start-->
-<!--                <footer>
-                    <?php echo date('Y'); ?> &copy; <?php echo SITENAME; ?>
-                </footer>-->
+                <!--                <footer>
+                <?php echo date('Y'); ?> &copy; <?php echo SITENAME; ?>
+                                </footer>-->
                 <!--footer section end-->
             </div>
             <!-- main content end-->

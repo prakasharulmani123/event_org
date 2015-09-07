@@ -23,8 +23,10 @@
  * The followings are the available model relations:
  * @property Role $role
  */
-class User extends CActiveRecord {
+class User extends RActiveRecord {
 
+    public $new_password;
+    public $confirm_password;
     /**
      * @return string the associated database table name
      */
@@ -39,14 +41,19 @@ class User extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('username, user_firstname, role_id, user_email, user_phone', 'required'),
+            array('username, user_firstname', 'required'),
+            array('role_id, user_email, user_phone', 'required', 'on' => 'user_create, user_update'),
             array('username, user_email', 'unique'),
-            array('role_id, modified_at, modified_by', 'numerical', 'integerOnly' => true),
+            array('user_email', 'email'),
+            array('role_id, created_by, modified_by, user_phone', 'numerical', 'integerOnly' => true),
             array('username, user_firstname, user_lastname, user_phone', 'length', 'max' => 50),
             array('password_hash, password_reset_token', 'length', 'max' => 255),
             array('user_email', 'length', 'max' => 100),
             array('status', 'length', 'max' => 1),
-            array('user_address, created_at, created_by', 'safe'),
+            array('new_password, confirm_password', 'length', 'min' => 6),
+            array('confirm_password', 'compare', 'compareAttribute' => 'new_password', 'on' => 'reset,update'),
+            array('new_password, confirm_password', 'required', 'on' => 'reset'),
+            array('user_address, created_at, created_by, confirm_password, new_password', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('user_id, username, password_hash, password_reset_token, user_firstname, user_lastname, role_id, user_email, user_phone, user_address, status, created_at, created_by, modified_at, modified_by', 'safe', 'on' => 'search'),
@@ -124,4 +131,10 @@ class User extends CActiveRecord {
         ));
     }
 
+     protected function afterValidate() {
+        if ($this->scenario == 'update' && !empty($this->confirm_password)) {
+            $this->password_hash = Myclass::encrypt($this->confirm_password);
+        }
+        return parent::afterValidate();
+    }
 }

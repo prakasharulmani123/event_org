@@ -78,5 +78,4 @@ class LoginForm extends CFormModel {
 
         endif;
     }
-
 }

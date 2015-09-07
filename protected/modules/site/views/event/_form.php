@@ -119,7 +119,9 @@ $(function(){
         selectableOptgroup: true
     });
     $('.default-date-picker').datepicker({
-        format: 'yyyy-mm-dd'
+        'dateFormat':'yy-mm-dd',
+    'changeYear': true,
+    'changeMonth': true,
     });
     $('.timepicker-default').timepicker();
 });

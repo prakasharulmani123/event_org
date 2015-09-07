@@ -16,7 +16,7 @@
  * The followings are the available model relations:
  * @property User[] $users
  */
-class Role extends CActiveRecord {
+class Role extends RActiveRecord {
 
     /**
      * @return string the associated database table name
@@ -40,7 +40,7 @@ class Role extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('role_name', 'required'),
-            array('rank, modified_at, modified_by', 'numerical', 'integerOnly' => true),
+            array('rank, created_by, modified_by', 'numerical', 'integerOnly' => true),
             array('role_name', 'length', 'max' => 50),
             array('status', 'length', 'max' => 1),
             array('created_at, created_by', 'safe'),

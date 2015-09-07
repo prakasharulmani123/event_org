@@ -189,7 +189,7 @@
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-usermenu pull-right">
-                    <li><a href="#"><i class="fa fa-user"></i>  Profile</a></li>
+                    <li><?php echo CHtml::link('<i class="fa fa-user"></i>  Profile', array('/site/default/profile'), array()); ?></li>
                     <li><?php echo CHtml::link('<i class="fa fa-sign-out"></i> Log out', array('/site/default/logout'), array()) ?></li>
                 </ul>
             </li>

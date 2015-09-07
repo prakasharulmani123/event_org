@@ -17,7 +17,7 @@
  * The followings are the available model relations:
  * @property EventLists[] $eventlists
  */
-class Event extends CActiveRecord {
+class Event extends RActiveRecord {
 
 //    public $userlist;
     /**
@@ -35,7 +35,7 @@ class Event extends CActiveRecord {
         // will receive user inputs.
         return array(
             array('event_name, event_date, event_users', 'required'),
-            array('modified_at, modified_by', 'numerical', 'integerOnly' => true),
+            array('created_by, modified_by', 'numerical', 'integerOnly' => true),
             array('event_name', 'length', 'max' => 255),
             array('status', 'length', 'max' => 1),
             array('created_at, created_by', 'safe'),

@@ -10,28 +10,19 @@
         <?php
         $themeUrl = $this->themeUrl;
         $cs = Yii::app()->getClientScript();
-
         $cs->registerCssFile($themeUrl . '/css/style.css');
+        $cs->registerCssFile($themeUrl . '/css/login.css');
         $cs->registerCssFile($themeUrl . '/css/style-responsive.css');
         ?>
-
-        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!--[if lt IE 9]>
-        <script src="js/html5shiv.js"></script>
-        <script src="js/respond.min.js"></script>
-        <![endif]-->
     </head>
     <body class="login-body">
         <div class="container">
             <?php echo $content ?>
         </div>
-        <!-- Placed js at the end of the document so the pages load faster -->
-        <!-- Placed js at the end of the document so the pages load faster -->
         <?php
         $cs_pos_end = CClientScript::POS_END;
         $cs->registerCoreScript('jquery');
-
-        $cs->registerScriptFile($themeUrl . '/js/jquery-1.10.2.min.js', $cs_pos_end);
+        $cs->registerScriptFile($themeUrl . '/js/jquery-ui-1.9.2.custom.min.js', $cs_pos_end);
         $cs->registerScriptFile($themeUrl . '/js/bootstrap.min.js', $cs_pos_end);
         $cs->registerScriptFile($themeUrl . '/js/modernizr.min.js', $cs_pos_end);
         ?>

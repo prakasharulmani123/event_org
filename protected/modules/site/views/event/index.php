@@ -109,7 +109,11 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
 <?php
 Yii::app()->clientScript->registerScript('for-date-picker', "
 function reInstallDatepicker(id, data){
-$('#event_date').datepicker({'dateFormat':'yy-mm-dd'});
+$('#event_date').datepicker({
+    'dateFormat':'yy-mm-dd',
+    'changeYear': true,
+    'changeMonth': true,
+    });
 }
 ");
 ?>

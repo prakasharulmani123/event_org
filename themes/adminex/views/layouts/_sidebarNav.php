@@ -40,7 +40,7 @@
             'encodeLabel' => false,
             'activateItems' => true,
             'items' => array(
-                array('label' => '<i class="fa fa-dashboard"></i> <span>Dashboard</span>', 'url' => Yii::app()->homeUrl),
+                array('label' => '<i class="fa fa-dashboard"></i> <span>Dashboard</span>', 'url' => array('/site/default/index')),
                 array('label' => '<i class="fa fa-cog"></i> <span>Administration</span>', 'url' => '#',
                     'itemOptions' => array('class' => 'menu-list'),
                     'submenuOptions' => array('class' => 'sub-menu-list'),
