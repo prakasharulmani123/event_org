@@ -34,7 +34,11 @@ class DefaultController extends Controller {
                 'users' => array('*'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('logout', 'index', 'profile'),
+                'actions' => array('logout', 'profile'),
+                'users' => array('@'),
+            ),
+            array('allow', // allow authenticated user to perform 'create' and 'update' actions
+                'actions' => array('index'),
                 'users' => array('@'),
             ),
             array('deny', // deny all users
@@ -45,6 +49,8 @@ class DefaultController extends Controller {
     }
 
     public function actionIndex() {
+        if(!UserIdentity::checkAdmin())
+            throw new CHttpException(404, Yii::t('err', 'Page not Found.'));;
         $this->render('index');
     }
 

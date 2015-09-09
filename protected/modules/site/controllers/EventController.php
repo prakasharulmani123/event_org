@@ -35,13 +35,18 @@ class EventController extends Controller {
      */
     public function accessRules() {
         return array(
-            array('allow', // allow all users to perform 'index' and 'view' actions
-                'actions' => array(),
-                'users' => array('*'),
+//            array('allow', // allow all users to perform 'index' and 'view' actions
+//                'actions' => array(),
+//                'users' => array('*'),
+//            ),
+            array('allow', // allow authenticated user to perform 'create' and 'update' actions
+                'actions' => array('index', 'view', 'admin', 'pdf', 'download', 'addTabularInputsAsTable'),
+                'expression' => 'UserIdentity::checkAccess()',
+                'users' => array('@'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('index', 'view', 'create', 'update', 'admin', 'delete', 'pdf', 'download', 'addTabularInputsAsTable'),
-                'expression' => 'UserIdentity::checkAccess()',
+                'actions' => array('create', 'update', 'delete'),
+                'expression' => 'UserIdentity::checkAdmin()',
                 'users' => array('@'),
             ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
@@ -62,6 +67,12 @@ class EventController extends Controller {
         $model = $this->loadModel($id);
         $history_model = new EventHistory;
         $this->performAjaxValidation($history_model);
+        if(!UserIdentity::checkAdmin()){
+            $valid_users = CJSON::decode($model->event_users);
+            if(!in_array(Yii::app()->user->id, $valid_users)){
+                throw new CHttpException(403, 'You are not authorized to perform this action');
+            }
+        }
         
         if(Yii::app()->request->isPostRequest){
             $history_model->attributes = $_POST['EventHistory'];
@@ -127,9 +138,9 @@ class EventController extends Controller {
         if (isset($_POST['Event'])) {
             $model->attributes = $_POST['Event'];
             if ($model->save()) {
-                EventLists::model()->deleteAllByAttributes(array('event_id' => $model->event_id));
+//                EventLists::model()->deleteAllByAttributes(array('event_id' => $model->event_id));
                 foreach ($_POST['EventLists'] as $key => $list_vals) {
-                    $list = new EventLists;
+                    $list = $list_vals['timing_id'] == '' ? new EventLists : EventLists::model()->findByPk($list_vals['timing_id']);
                     $list->event_id = $model->event_id;
                     $list->attributes = $list_vals;
                     $list->save();

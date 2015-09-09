@@ -10,6 +10,7 @@
  * @property string $timing_start
  * @property string $timing_end
  * @property string $timing_notes
+ * @property string $event_type
  * @property string $created_at
  * @property string $created_by
  * @property integer $modified_at
@@ -38,7 +39,7 @@ class EventLists extends RActiveRecord {
             array('event_id', 'required', 'on' => 'update'),
             array('event_id, created_by, modified_by', 'numerical', 'integerOnly' => true),
             array('list_title', 'length', 'max' => 255),
-            array('timing_notes, created_at, created_by', 'safe'),
+            array('timing_notes, created_at, created_by, event_type', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('timing_id, event_id, list_title, timing_start, timing_end, timing_notes, created_at, created_by, modified_at, modified_by', 'safe', 'on' => 'search'),
@@ -68,6 +69,7 @@ class EventLists extends RActiveRecord {
             'timing_start' => 'Timing Start',
             'timing_end' => 'Timing End',
             'timing_notes' => 'Timing Notes',
+            'event_type' => 'Event Type',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'modified_at' => 'Modified At',
@@ -107,4 +109,13 @@ class EventLists extends RActiveRecord {
         ));
     }
 
+    public function eventtypes($key = null) {
+        $lists = array(
+            'FX' => 'Fixed',
+            'FL' => 'Flexible',
+        );
+        if($key != null)
+            return $lists[$key];
+        return $lists;
+    }
 }

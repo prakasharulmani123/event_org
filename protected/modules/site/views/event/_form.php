@@ -62,12 +62,14 @@
                                     'models' => $lists,
                                     'containerTagName' => 'table',
                                     'containerCssClass' => 'table',
+                                    'containerHtmlOptions' => array('style' => 'width:100%'),
                                     'headerTagName' => 'thead',
                                     'header' => '<tr>
-                                            <td>' . CHtml::activeLabelEX(EventLists::model(), 'list_title') . '</td>
-                                            <td>' . CHtml::activeLabelEX(EventLists::model(), 'timing_start') . '</td>
-                                            <td>' . CHtml::activeLabelEX(EventLists::model(), 'timing_end') . '</td>
-                                            <td>' . CHtml::activeLabelEX(EventLists::model(), 'timing_notes') . '</td>
+                                            <td style="width: 20%;">' . CHtml::activeLabelEX(EventLists::model(), 'list_title') . '</td>
+                                            <td style="width: 15%;">' . CHtml::activeLabelEX(EventLists::model(), 'event_type') . '</td>
+                                            <td style="width: 20%;">' . CHtml::activeLabelEX(EventLists::model(), 'timing_start') . '</td>
+                                            <td style="width: 20%;">' . CHtml::activeLabelEX(EventLists::model(), 'timing_end') . '</td>
+                                            <td style="width: 25%;">' . CHtml::activeLabelEX(EventLists::model(), 'timing_notes') . '</td>
                                             <td></td>
                                         </tr>
                                     ',

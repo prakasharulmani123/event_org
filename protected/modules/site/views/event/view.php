@@ -73,44 +73,77 @@ $this->breadcrumbs = array(
         <header class="panel-heading">Event List</header>
         <div class="panel-body">
             <div class="adv-table">
-                <table  class="display table table-bordered table-striped" id="dynamic-table">
+                <table  class="display table table-bordered table-striped" id="dynamic-table" style="width: 100%">
                     <thead>
                         <tr>
-                            <th><?php echo EventLists::model()->getAttributeLabel('list_title'); ?></th>
-                            <th><?php echo EventLists::model()->getAttributeLabel('timing_start'); ?></th>
-                            <th><?php echo EventLists::model()->getAttributeLabel('timing_end'); ?></th>
-                            <th class="hidden-phone"><?php echo EventLists::model()->getAttributeLabel('timing_notes'); ?></th>
-                            <th style="width: 50px;">Make Time</th>
+                            <th style="width: 20%;"><?php echo EventLists::model()->getAttributeLabel('list_title'); ?></th>
+                            <th style="width: 10%;"><?php echo EventLists::model()->getAttributeLabel('event_type'); ?></th>
+                            <th style="width: 10%;"><?php echo EventLists::model()->getAttributeLabel('timing_start'); ?></th>
+                            <th style="width: 10%;"><?php echo EventLists::model()->getAttributeLabel('timing_end'); ?></th>
+                            <th style="width: 20%;"class="hidden-phone"><?php echo EventLists::model()->getAttributeLabel('timing_notes'); ?></th>
+                            <?php if (!UserIdentity::checkAdmin()) { ?>
+                                <th style="width: 20%;">Action</th>
+                            <?php } ?>
                         </tr>
                     </thead>
                     <tbody>
                         <?php foreach ($model->eventlists as $list): ?>
                             <tr class="gradeX">
                                 <td><?php echo $list->list_title; ?></td>
+                                <td><?php echo $list->eventtypes($list->event_type); ?></td>
                                 <td><?php echo $list->timing_start; ?></td>
                                 <td><?php echo $list->timing_end; ?></td>
                                 <td class="center hidden-phone"><?php echo $list->timing_notes; ?></td>
-                                <td>
-                                    <?php
-                                    $this->widget(
-                                            'booster.widgets.TbButton', array(
-                                        'icon' => 'fa fa-clock-o',
-                                        'label' => '',
-                                        'context' => 'primary',
-                                        'htmlOptions' => array(
-                                            'data-toggle' => 'modal',
-                                            'data-target' => '#myModal',
-                                            'onclick' => "{
+                                <?php if (!UserIdentity::checkAdmin()) { ?>
+                                    <td>
+                                        <?php
+                                        if ($list->event_type == 'FL') {
+                                            $this->widget(
+                                                    'booster.widgets.TbButton', array(
+                                                'icon' => 'fa fa-minus',
+                                                'label' => 'Make Time',
+                                                'context' => 'primary',
+                                                'htmlOptions' => array(
+                                                    'data-toggle' => 'modal',
+                                                    'data-target' => '#myModal',
+                                                    'onclick' => "{
                                                 $('#event_list_id').val('$list->timing_id');
                                                 $('#list_title').val('$list->list_title');
                                                 $('#timing_start, #event_hist_from').val('$list->timing_start');
                                                 $('#timing_end, #event_hist_to').val('$list->timing_end');
+                                                $('#event_hist_time_separator').val('-');
+                                                $('#modelTitle').html('Make Time');
+                                                $('#event_hist_type').val('MT');
                                                 }
                                             "
-                                        ),
-                                            )
-                                    );
-                                    ?>
+                                                ),
+                                                    )
+                                            );
+                                            echo '&nbsp;&nbsp;';
+                                            $this->widget(
+                                                    'booster.widgets.TbButton', array(
+                                                'icon' => 'fa fa-plus',
+                                                'label' => 'Push Time',
+                                                'context' => 'primary',
+                                                'htmlOptions' => array(
+                                                    'data-toggle' => 'modal',
+                                                    'data-target' => '#myModal',
+                                                    'onclick' => "{
+                                                $('#event_list_id').val('$list->timing_id');
+                                                $('#list_title').val('$list->list_title');
+                                                $('#timing_start, #event_hist_from').val('$list->timing_start');
+                                                $('#timing_end, #event_hist_to').val('$list->timing_end');
+                                                $('#event_hist_time_separator').val('+');
+                                                $('#modelTitle').html('Push Time');
+                                                $('#event_hist_type').val('PT');
+                                                }
+                                            "
+                                                ),
+                                                    )
+                                            );
+                                        }
+                                        ?>
+                                    <?php } ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -128,6 +161,7 @@ $this->breadcrumbs = array(
                     <thead>
                         <tr>
                             <th><?php echo EventLists::model()->getAttributeLabel('list_title'); ?></th>
+                            <th><?php echo EventHistory::model()->getAttributeLabel('event_hist_type'); ?></th>
                             <th><?php echo EventHistory::model()->getAttributeLabel('event_hist_from'); ?></th>
                             <th><?php echo EventHistory::model()->getAttributeLabel('event_hist_to'); ?></th>
                             <th><?php echo EventHistory::model()->getAttributeLabel('event_hist_excess_time'); ?></th>
@@ -141,91 +175,94 @@ $this->breadcrumbs = array(
                             <?php foreach ($list->eventHistories as $history): ?>
                                 <tr class="gradeX">
                                     <td><?php echo $list->list_title; ?></td>
+                                    <td><?php echo $history->historytype($history->event_hist_type); ?></td>
                                     <td><?php echo $history->event_hist_from; ?></td>
                                     <td><?php echo $history->event_hist_to; ?></td>
                                     <td><?php echo $history->event_hist_excess_time; ?></td>
                                     <td><?php echo $history->event_hist_reason; ?></td>
                                     <td><?php echo $history->createdBy->fullname; ?></td>
                                 </tr>
-                            <?php $i++; ?>
+                                <?php $i++; ?>
                             <?php endforeach; ?>
                         <?php endforeach; ?>
-                            <?php if($i == 0){ ?>
-                                <tr class="gradeX">
-                                    <td colspan="6">No data found</td>
-                                </tr>
-                            <?php } ?>
+                        <?php if ($i == 0) { ?>
+                            <tr class="gradeX">
+                                <td colspan="6">No data found</td>
+                            </tr>
+                        <?php } ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </section>
+</div>
 
+<?php
+$this->beginWidget(
+        'booster.widgets.TbModal', array('id' => 'myModal')
+);
+?>
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">&times;</a>
+    <h4 id="modelTitle">Push Time</h4>
+</div>
+<div class="modal-body">
     <?php
-    $this->beginWidget(
-            'booster.widgets.TbModal', array('id' => 'myModal')
-    );
+    $form = $this->beginWidget('CActiveForm', array(
+        'id' => 'event-history-form',
+        'htmlOptions' => array('role' => 'form', 'class' => 'form-horizontal'),
+        'clientOptions' => array(
+            'validateOnSubmit' => true,
+        ),
+        'enableAjaxValidation' => true,
+    ));
+    echo $form->hiddenField($history_model, 'event_list_id', array('id' => 'event_list_id'));
+    echo $form->hiddenField($history_model, 'event_hist_from', array('id' => 'event_hist_from'));
+    echo $form->hiddenField($history_model, 'event_hist_to', array('id' => 'event_hist_to'));
+    echo $form->hiddenField($history_model, 'event_hist_time_separator', array('id' => 'event_hist_time_separator'));
+    echo $form->hiddenField($history_model, 'event_hist_type', array('id' => 'event_hist_type'));
     ?>
-    <div class="modal-header">
-        <a class="close" data-dismiss="modal">&times;</a>
-        <h4>Make Time</h4>
+    <div class="form-group">
+        <label class="col-sm-3 control-label required"><?php echo $model->getAttributeLabel('list_title'); ?> <span class="required">*</span></label>
+        <div class="col-sm-5">
+            <?php echo CHtml::textField('list_title', '', array('class' => 'form-control', 'readonly' => true, 'id' => 'list_title')); ?>
+        </div>
     </div>
-    <div class="modal-body">
-        <?php
-        $form = $this->beginWidget('CActiveForm', array(
-            'id' => 'event-history-form',
-            'htmlOptions' => array('role' => 'form', 'class' => 'form-horizontal'),
-            'clientOptions' => array(
-                'validateOnSubmit' => true,
-            ),
-            'enableAjaxValidation' => true,
-        ));
-        echo $form->hiddenField($history_model, 'event_list_id', array('id' => 'event_list_id'));
-        echo $form->hiddenField($history_model, 'event_hist_from', array('id' => 'event_hist_from'));
-        echo $form->hiddenField($history_model, 'event_hist_to', array('id' => 'event_hist_to'));
-        ?>
-        <div class="form-group">
-            <label class="col-sm-3 control-label required"><?php echo $model->getAttributeLabel('list_title'); ?> <span class="required">*</span></label>
-            <div class="col-sm-5">
-                <?php echo CHtml::textField('list_title', '', array('class' => 'form-control', 'readonly' => true, 'id' => 'list_title')); ?>
-            </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label required"><?php echo $model->getAttributeLabel('timing_start'); ?> <span class="required">*</span></label>
+        <div class="col-sm-5">
+            <?php echo CHtml::textField('timing_start', '', array('class' => 'form-control', 'readonly' => true, 'id' => 'timing_start')); ?>
         </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label required"><?php echo $model->getAttributeLabel('timing_start'); ?> <span class="required">*</span></label>
-            <div class="col-sm-5">
-                <?php echo CHtml::textField('timing_start', '', array('class' => 'form-control', 'readonly' => true, 'id' => 'timing_start')); ?>
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="col-sm-3 control-label required"><?php echo $model->getAttributeLabel('timing_end'); ?> <span class="required">*</span></label>
-            <div class="col-sm-5">
-                <?php echo CHtml::textField('timing_end', '', array('class' => 'form-control', 'readonly' => true, 'id' => 'timing_end')); ?>
-            </div>
-        </div>
-        <div class="form-group">
-            <?php echo $form->labelEx($history_model, 'event_hist_excess_time', array('class' => 'col-sm-3 control-label')); ?>
-            <div class="col-sm-5">
-                <div class="input-group bootstrap-timepicker">
-                    <?php echo $form->textField($history_model, 'event_hist_excess_time', array('class' => 'form-control timepicker-default')); ?>
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="button"><i class="fa fa-clock-o"></i></button>
-                    </span>
-                </div>
-                <?php echo $form->error($history_model, 'event_hist_excess_time'); ?>
-            </div>
-        </div>
-        <div class="form-group">
-            <?php echo $form->labelEx($history_model, 'event_hist_reason', array('class' => 'col-sm-3 control-label')); ?>
-            <div class="col-sm-8">
-                <?php echo $form->textArea($history_model, 'event_hist_reason', array('class' => 'form-control', 'rows' => 6, 'cols' => 50)); ?>
-                <?php echo $form->error($history_model, 'event_hist_reason'); ?>
-            </div>
-        </div>
-        <?php echo CHtml::submitButton($history_model->isNewRecord ? 'Create' : 'Save', array('class' => $history_model->isNewRecord ? 'btn btn-success' : 'btn btn-primary')); ?>
-        <?php $this->endWidget(); ?>
     </div>
+    <div class="form-group">
+        <label class="col-sm-3 control-label required"><?php echo $model->getAttributeLabel('timing_end'); ?> <span class="required">*</span></label>
+        <div class="col-sm-5">
+            <?php echo CHtml::textField('timing_end', '', array('class' => 'form-control', 'readonly' => true, 'id' => 'timing_end')); ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <?php echo $form->labelEx($history_model, 'event_hist_excess_time', array('class' => 'col-sm-3 control-label')); ?>
+        <div class="col-sm-5">
+            <div class="input-group bootstrap-timepicker">
+                <?php echo $form->textField($history_model, 'event_hist_excess_time', array('class' => 'form-control timepicker-default')); ?>
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button"><i class="fa fa-clock-o"></i></button>
+                </span>
+            </div>
+            <?php echo $form->error($history_model, 'event_hist_excess_time'); ?>
+        </div>
+    </div>
+    <div class="form-group">
+        <?php echo $form->labelEx($history_model, 'event_hist_reason', array('class' => 'col-sm-3 control-label')); ?>
+        <div class="col-sm-8">
+            <?php echo $form->textArea($history_model, 'event_hist_reason', array('class' => 'form-control', 'rows' => 6, 'cols' => 50)); ?>
+            <?php echo $form->error($history_model, 'event_hist_reason'); ?>
+        </div>
+    </div>
+    <?php echo CHtml::submitButton($history_model->isNewRecord ? 'Create' : 'Save', array('class' => $history_model->isNewRecord ? 'btn btn-success' : 'btn btn-primary')); ?>
     <?php $this->endWidget(); ?>
 </div>
+<?php $this->endWidget(); ?>
 
 <?php
 $cs = Yii::app()->getClientScript();
@@ -244,6 +281,7 @@ $(function(){
         defaultTime: '00:00:00'
     });
 });
+
 EOD;
 $cs->registerScript('view', $js);
 $cs->registerCssFile($themeUrl . '/js/bootstrap-timepicker/css/timepicker.css');

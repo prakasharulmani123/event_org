@@ -150,7 +150,7 @@
                 <?php $histories = EventHistory::model()->mine()->findAll(array('limit' => 5, 'order' => 'created_at desc')) ?>
                 <?php if (!empty($histories)) { ?>
                     <div class="dropdown-menu dropdown-menu-head pull-right">
-                        <h5 class="title">Latest Make times</h5>
+                        <h5 class="title">Latest Event Histories</h5>
                         <ul class="dropdown-list normal-list">
                             <?php foreach ($histories as $history): ?>
                                 <li class="new">
@@ -158,9 +158,9 @@
                                         <span class="label label-danger"><i class="fa fa-bolt"></i></span>
                                         <span class="name">
                                             <b><?php echo $history->eventList->list_title; ?></b><br />
-                                            Reason: <?php echo $history->event_hist_reason; ?><br />
+                                            Reason: <?php echo (strlen($history->event_hist_reason) > 100) ? substr($history->event_hist_reason,0,97).'...' : $history->event_hist_reason; ?><br />
                                         </span>
-                                        <em class="small">Make Time: <?php echo $history->event_hist_excess_time; ?></em>
+                                        <em class="small"><?php echo $history->historytype($history->event_hist_type) ?>: <?php echo $history->event_hist_excess_time; ?></em>
                                     </a>
                                 </li>
                             <?php endforeach; ?>
@@ -171,7 +171,7 @@
             </li>
             <li>
                 <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-                    <?php // echo CHtml::image("{$this->themeUrl}/images/photos/user-avatar.png", '', array()); ?>
+                    <?php echo CHtml::image("{$this->themeUrl}/images/avatar5.png", '', array()); ?>
                     <?php echo Yii::app()->user->name; ?>
                     <span class="caret"></span>
                 </a>

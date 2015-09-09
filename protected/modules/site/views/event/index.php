@@ -25,6 +25,7 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
                     'url' => array('/site/event/create'),
                     'buttonType' => 'link',
                     'context' => 'success',
+                    'visible' => UserIdentity::checkAdmin(),
                     'htmlOptions' => array('class' => 'pull-right btn-sm mtm5'),
                         )
                 );

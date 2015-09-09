@@ -5,10 +5,10 @@
         <h3><?php echo SITENAME; ?></h3>
     </div>
 <!--    <div class="logo">
-        <a href="index.html"><img src="images/logo.png" alt=""></a>
+        <?php echo CHtml::image($this->themeUrl.'/images/logo.png', ''); ?>
     </div>
     <div class="logo-icon text-center">
-        <a href="index.html"><img src="images/logo_icon.png" alt=""></a>
+        <?php echo CHtml::image('images/logo.png', ''); ?>
     </div>-->
     <!--logo and iconic logo end-->
 
