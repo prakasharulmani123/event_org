@@ -11,6 +11,7 @@
  * @property string $timing_end
  * @property string $timing_notes
  * @property string $event_type
+ * @property string $event_adjusted
  * @property string $created_at
  * @property string $created_by
  * @property integer $modified_at
@@ -39,7 +40,7 @@ class EventLists extends RActiveRecord {
             array('event_id', 'required', 'on' => 'update'),
             array('event_id, created_by, modified_by', 'numerical', 'integerOnly' => true),
             array('list_title', 'length', 'max' => 255),
-            array('timing_notes, created_at, created_by, event_type', 'safe'),
+            array('timing_notes, created_at, created_by, event_type, event_adjusted', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('timing_id, event_id, list_title, timing_start, timing_end, timing_notes, created_at, created_by, modified_at, modified_by', 'safe', 'on' => 'search'),
@@ -117,5 +118,13 @@ class EventLists extends RActiveRecord {
         if($key != null)
             return $lists[$key];
         return $lists;
+    }
+    
+    protected function beforeSave() {
+        if($this->isNewRecord){
+            $this->timing_start = date('h:i:s', strtotime($this->timing_start));
+            $this->timing_end = date('h:i:s', strtotime($this->timing_end));
+        }
+        return parent::beforeSave();
     }
 }

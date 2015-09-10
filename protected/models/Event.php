@@ -54,6 +54,8 @@ class Event extends RActiveRecord {
         // class name for the relations automatically generated below.
         return array(
             'eventlists' => array(self::HAS_MANY, 'EventLists', 'event_id'),
+            'createdBy' => array(self::BELONGS_TO, 'User', 'created_by'),
+            'modifiedBy' => array(self::BELONGS_TO, 'User', 'modified_by'),
         );
     }
 
@@ -100,7 +102,7 @@ class Event extends RActiveRecord {
         
         if(!empty($this->search_users)){
             foreach ($this->search_users as $search_user) {
-                $criteria->compare('event_users', '"'.$search_user.'"', true, 'OR');
+                $criteria->compare('event_users', '"'.$search_user.'"', true);
             }
         }
 

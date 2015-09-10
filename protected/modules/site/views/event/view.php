@@ -61,6 +61,10 @@ $this->breadcrumbs = array(
             'event_date',
             'userlist',
             array(
+                'name' => 'created_by',
+                'value' => $model->createdBy->fullname
+            ),
+            array(
                 'name' => 'Active',
                 'type' => 'raw',
                 'value' => $model->status == 1 ? '<i class="fa fa-circle text-green"></i>' : '<i class="fa fa-circle text-red"></i>'
@@ -76,13 +80,13 @@ $this->breadcrumbs = array(
                 <table  class="display table table-bordered table-striped" id="dynamic-table" style="width: 100%">
                     <thead>
                         <tr>
-                            <th style="width: 20%;"><?php echo EventLists::model()->getAttributeLabel('list_title'); ?></th>
+                            <th style="width: 15%;"><?php echo EventLists::model()->getAttributeLabel('list_title'); ?></th>
                             <th style="width: 10%;"><?php echo EventLists::model()->getAttributeLabel('event_type'); ?></th>
                             <th style="width: 10%;"><?php echo EventLists::model()->getAttributeLabel('timing_start'); ?></th>
                             <th style="width: 10%;"><?php echo EventLists::model()->getAttributeLabel('timing_end'); ?></th>
-                            <th style="width: 20%;"class="hidden-phone"><?php echo EventLists::model()->getAttributeLabel('timing_notes'); ?></th>
+                            <th style="width: 25%;"class="hidden-phone"><?php echo EventLists::model()->getAttributeLabel('timing_notes'); ?></th>
                             <?php if (!UserIdentity::checkAdmin()) { ?>
-                                <th style="width: 20%;">Action</th>
+                                <th style="width: 30%;">Action</th>
                             <?php } ?>
                         </tr>
                     </thead>
@@ -91,18 +95,18 @@ $this->breadcrumbs = array(
                             <tr class="gradeX">
                                 <td><?php echo $list->list_title; ?></td>
                                 <td><?php echo $list->eventtypes($list->event_type); ?></td>
-                                <td><?php echo $list->timing_start; ?></td>
-                                <td><?php echo $list->timing_end; ?></td>
+                                <td><?php echo date('h:i A', strtotime($list->timing_start)); ?></td>
+                                <td><?php echo date('h:i A', strtotime($list->timing_end)); ?></td>
                                 <td class="center hidden-phone"><?php echo $list->timing_notes; ?></td>
                                 <?php if (!UserIdentity::checkAdmin()) { ?>
                                     <td>
                                         <?php
-                                        if ($list->event_type == 'FL') {
+                                        if ($list->event_type == 'FL' /*&& $list->event_adjusted == 'N'*/) {
                                             $this->widget(
                                                     'booster.widgets.TbButton', array(
                                                 'icon' => 'fa fa-minus',
                                                 'label' => 'Make Time',
-                                                'context' => 'primary',
+                                                'context' => 'info',
                                                 'htmlOptions' => array(
                                                     'data-toggle' => 'modal',
                                                     'data-target' => '#myModal',
@@ -124,7 +128,7 @@ $this->breadcrumbs = array(
                                                     'booster.widgets.TbButton', array(
                                                 'icon' => 'fa fa-plus',
                                                 'label' => 'Push Time',
-                                                'context' => 'primary',
+                                                'context' => 'warning',
                                                 'htmlOptions' => array(
                                                     'data-toggle' => 'modal',
                                                     'data-target' => '#myModal',
@@ -153,48 +157,36 @@ $this->breadcrumbs = array(
         </div>
     </section>
 
-    <section class="panel">
-        <header class="panel-heading">Event History</header>
-        <div class="panel-body">
-            <div class="adv-table">
-                <table  class="display table table-bordered table-striped" id="dynamic-table">
-                    <thead>
-                        <tr>
-                            <th><?php echo EventLists::model()->getAttributeLabel('list_title'); ?></th>
-                            <th><?php echo EventHistory::model()->getAttributeLabel('event_hist_type'); ?></th>
-                            <th><?php echo EventHistory::model()->getAttributeLabel('event_hist_from'); ?></th>
-                            <th><?php echo EventHistory::model()->getAttributeLabel('event_hist_to'); ?></th>
-                            <th><?php echo EventHistory::model()->getAttributeLabel('event_hist_excess_time'); ?></th>
-                            <th><?php echo EventHistory::model()->getAttributeLabel('event_hist_reason'); ?></th>
-                            <th><?php echo EventHistory::model()->getAttributeLabel('created_by'); ?></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $i = 0; ?>
-                        <?php foreach ($model->eventlists as $list): ?>
-                            <?php foreach ($list->eventHistories as $history): ?>
-                                <tr class="gradeX">
-                                    <td><?php echo $list->list_title; ?></td>
-                                    <td><?php echo $history->historytype($history->event_hist_type); ?></td>
-                                    <td><?php echo $history->event_hist_from; ?></td>
-                                    <td><?php echo $history->event_hist_to; ?></td>
-                                    <td><?php echo $history->event_hist_excess_time; ?></td>
-                                    <td><?php echo $history->event_hist_reason; ?></td>
-                                    <td><?php echo $history->createdBy->fullname; ?></td>
-                                </tr>
-                                <?php $i++; ?>
-                            <?php endforeach; ?>
-                        <?php endforeach; ?>
-                        <?php if ($i == 0) { ?>
-                            <tr class="gradeX">
-                                <td colspan="6">No data found</td>
-                            </tr>
-                        <?php } ?>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </section>
+    <?php $i = 0; ?>
+    <div class="timeline">
+        <?php foreach ($model->eventlists as $list): ?>
+           
+                <article class="timeline-item alt">
+                    <div class="text-right">
+                        <div class="time-show first">
+                            <a data-original-title="<?php echo $list->list_title; ?>" data-placement="top" data-toggle="tooltip " href="#" class="btn btn-primary tooltips" title="<?php echo $list->list_title; ?>"><?php echo strlen($list->list_title) > 20 ? substr($list->list_title, 0, 17).'..' : $list->list_title; echo '<br />'.date('h:i A', strtotime($list->timing_start)).'-'.date('h:i A', strtotime($list->timing_end)); ?></a>
+                        </div>
+                    </div>
+                </article>
+                <?php foreach ($list->eventHistories as $history): ?>
+                    <article class="timeline-item <?php echo $i % 2 ? '' : 'alt' ?>">
+                        <div class="timeline-desk">
+                            <div class="panel">
+                                <div class="panel-body">
+                                    <span class="arrow<?php echo $i % 2 ? '' : '-alt' ?>"></span>
+                                    <span class="timeline-icon"></span>
+                                    <h1 class="<?php echo $i % 2 ? 'red' : 'green' ?>"><b><?php echo date('h:i A', strtotime($history->event_hist_new_to)); ?></b></h1>
+                                    <h1 class="<?php echo $i % 2 ? 'green' : 'red' ?>"><?php echo $history->historytype($history->event_hist_type); ?> : <?php echo date('H', strtotime($history->event_hist_excess_time)).' hours '.date('i', strtotime($history->event_hist_excess_time)).' minutes '.date('s', strtotime($history->event_hist_excess_time)).' sec'; ?></h1>
+                                    <p><?php echo $history->event_hist_reason; ?></p>
+                                    <p>By: <?php echo $history->createdBy->fullname; ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                    <?php $i++; ?>
+                <?php endforeach; ?>
+        <?php endforeach; ?>
+    </div>
 </div>
 
 <?php

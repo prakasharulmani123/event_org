@@ -10,6 +10,8 @@
  * @property string $event_hist_time_separator
  * @property string $event_hist_excess_time
  * @property string $event_hist_type
+ * @property string $event_hist_new_from
+ * @property string $event_hist_new_to
  * @property string $created_at
  * @property integer $created_by
  * @property string $modified_at
@@ -31,9 +33,10 @@ class EventHistory extends RActiveRecord {
         $alias = $this->getTableAlias(false, FALSE);
         $user_id = Yii::app()->user->id;
         return array(
-            'mine' =>  array('condition' => "$alias.created_by = '$user_id'")
+            'mine' => array('condition' => "$alias.created_by = '$user_id'")
         );
     }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -44,7 +47,7 @@ class EventHistory extends RActiveRecord {
             array('event_list_id, event_hist_reason, event_hist_excess_time, event_hist_from, event_hist_to', 'required'),
             array('event_list_id, created_by, modified_by', 'numerical', 'integerOnly' => true),
             array('event_hist_time_separator', 'length', 'max' => 1),
-            array('created_at, modified_at, event_hist_from, event_hist_to, event_hist_type', 'safe'),
+            array('created_at, modified_at, event_hist_from, event_hist_to, event_hist_type, event_hist_new_from, event_hist_new_to', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
             array('event_hist_id, event_list_id, event_hist_reason, event_hist_time_separator, event_hist_excess_time, created_at, created_by, modified_at, modified_by', 'safe', 'on' => 'search'),
@@ -115,21 +118,45 @@ class EventHistory extends RActiveRecord {
         ));
     }
 
+    protected function beforeSave() {
+        $this->event_hist_new_from = $this->event_hist_from;
+        if ($this->event_hist_time_separator == '+') {
+            $this->event_hist_new_to = date("H:i:s", strtotime($this->event_hist_to) + strtotime($this->event_hist_excess_time) - strtotime("00:00:00"));
+        } else if ($this->event_hist_time_separator == '-') {
+            $this->event_hist_new_to = date("H:i:s", strtotime($this->event_hist_to) - strtotime($this->event_hist_excess_time) + strtotime("00:00:00"));
+        }
+        return parent::beforeSave();
+    }
+
     protected function afterSave() {
         $event_list = EventLists::model()->findByPk($this->event_list_id);
         $lists = EventLists::model()->findAll('event_id = :event_id And timing_start >= :time And event_type = :type', array(':event_id' => $event_list->event_id, ':time' => $event_list->timing_start, ':type' => 'FL'));
         $i = 1;
         foreach ($lists as $list) {
+            $old_start_time = date('h:i A', strtotime($list->timing_start));
+            $old_end_time = date('h:i A', strtotime($list->timing_end));
+            $type = '';
+            
+            if ($this->event_hist_time_separator == '+'){
+                $list->timing_end = date("H:i:s", strtotime($list->timing_end) + strtotime($this->event_hist_excess_time) - strtotime("00:00:00"));
+                $type = 'Push Time';
+            }else if ($this->event_hist_time_separator == '-'){
+                $list->timing_end = date("H:i:s", strtotime($list->timing_end) - strtotime($this->event_hist_excess_time) + strtotime("00:00:00"));
+                $type = 'Make Time';
+            }
+            
             if ($i != 1) {
-                if($this->event_hist_time_separator == '+')
+                if ($this->event_hist_time_separator == '+')
                     $list->timing_start = date("H:i:s", strtotime($list->timing_start) + (strtotime($this->event_hist_excess_time) - strtotime("00:00:00")));
                 else
                     $list->timing_start = date("H:i:s", strtotime($list->timing_start) - (strtotime($this->event_hist_excess_time) - strtotime("00:00:00")));
+            }else{
+                $list->event_adjusted = 'Y';
+                $notes = '';
+                $new_end_time = date('h:i A', strtotime($list->timing_end));
+                $notes .= "Modified by : ".Yii::app()->user->name." <br> {$old_end_time} changed as {$new_end_time}"."<br> {$type} Duration: {$this->event_hist_excess_time}<br><br>";
+                $list->timing_notes = $list->timing_notes.$notes;
             }
-            if($this->event_hist_time_separator == '+')
-                $list->timing_end = date("H:i:s", strtotime($list->timing_end) + strtotime($this->event_hist_excess_time) - strtotime("00:00:00"));
-            else if($this->event_hist_time_separator == '-')
-                $list->timing_end = date("H:i:s", strtotime($list->timing_end) - strtotime($this->event_hist_excess_time) + strtotime("00:00:00"));
             $list->save();
             $i++;
         }
@@ -141,8 +168,9 @@ class EventHistory extends RActiveRecord {
             'MT' => 'Make Time',
             'PT' => 'Push Time',
         );
-        if($key != null)
+        if ($key != null)
             return $lists[$key];
         return $lists;
     }
+
 }
