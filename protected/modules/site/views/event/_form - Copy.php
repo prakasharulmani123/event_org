@@ -16,7 +16,6 @@
                         'htmlOptions' => array('role' => 'form', 'class' => 'form-horizontal'),
                         'clientOptions' => array(
                             'validateOnSubmit' => true,
-                            'validateOnChange' => false,
                         ),
                         'enableAjaxValidation' => true,
                     ));
@@ -36,6 +35,56 @@
                             <div class="col-sm-5">
                                 <?php echo $form->textField($model, 'event_date', array('class' => 'form-control form-control-inline input-medium default-date-picker')); ?>
                                 <?php echo $form->error($model, 'event_date'); ?>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <?php echo $form->labelEx($model, 'event_users', array('class' => 'col-sm-2 control-label')); ?>
+                            <div class="col-md-5">
+                                <?php 
+                                $selected = array();
+                                if(!empty($model->event_users)){
+                                    $userlists = CJSON::decode($model->event_users);
+                                    foreach ($userlists as $value) {
+                                        $selected[$value] = array('selected' => 'selected');
+                                    }
+                                }
+                                ?>
+                                <?php echo $form->dropDownList($model, 'event_users', $roleUsers, array('multiple' => "multiple", 'class' => "multi-select-group", 'options' => $selected)); ?>
+                                <?php echo $form->error($model, 'event_users'); ?>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <?php echo $form->labelEx($model, 'Event List(s)', array('class' => 'col-sm-2 control-label')); ?>
+                            <div class="col-md-9">
+                                <?php
+                                $this->widget('ext.widgets.tabularinput.XTabularInput', array(
+                                    'models' => $lists,
+                                    'containerTagName' => 'table',
+                                    'containerCssClass' => 'table',
+                                    'containerHtmlOptions' => array('style' => 'width:100%'),
+                                    'headerTagName' => 'thead',
+                                    'header' => '<tr>
+                                            <td style="width: 20%;">' . CHtml::activeLabelEX(EventLists::model(), 'list_title') . '</td>
+                                            <td style="width: 15%;">' . CHtml::activeLabelEX(EventLists::model(), 'event_type') . '</td>
+                                            <td style="width: 20%;">' . CHtml::activeLabelEX(EventLists::model(), 'timing_start') . '</td>
+                                            <td style="width: 20%;">' . CHtml::activeLabelEX(EventLists::model(), 'timing_end') . '</td>
+                                            <td style="width: 25%;">' . CHtml::activeLabelEX(EventLists::model(), 'timing_notes') . '</td>
+                                            <td></td>
+                                        </tr>
+                                    ',
+                                    'inputContainerTagName' => 'tbody',
+                                    'inputTagName' => 'tr',
+                                    'inputView' => '_tabularInputAsTable',
+                                    'inputUrl' => $this->createUrl('/site/event/addTabularInputsAsTable'),
+                                    'addTemplate' => '<tbody><tr><td colspan="3">{link}</td></tr></tbody>',
+                                    'addLabel' => '<i class="fa fa-1x fa-plus"></i> '.Yii::t('ui', 'Add new list'),
+                                    'addHtmlOptions' => array('class' => 'blue pill full-width'),
+                                    'removeTemplate' => '<td>{link}</td>',
+                                    'removeLabel' => '<i class="fa fa-2x fa-trash-o"></i>',
+                                    'removeHtmlOptions' => array('class' => 'red pill'),
+                                ));
+                                ?>
                             </div>
                         </div>
                     </div><!-- /.box-body -->

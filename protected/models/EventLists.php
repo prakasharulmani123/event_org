@@ -7,6 +7,7 @@
  * @property integer $timing_id
  * @property integer $event_id
  * @property string $list_title
+ * @property integer $list_role
  * @property string $timing_start
  * @property string $timing_end
  * @property string $timing_notes
@@ -36,14 +37,14 @@ class EventLists extends RActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('list_title, timing_start, timing_end', 'required'),
+            array('list_title, list_role, timing_start, timing_end', 'required'),
             array('event_id', 'required', 'on' => 'update'),
-            array('event_id, created_by, modified_by', 'numerical', 'integerOnly' => true),
+            array('event_id, list_role, created_by, modified_by', 'numerical', 'integerOnly' => true),
             array('list_title', 'length', 'max' => 255),
             array('timing_notes, created_at, created_by, event_type, event_adjusted', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('timing_id, event_id, list_title, timing_start, timing_end, timing_notes, created_at, created_by, modified_at, modified_by', 'safe', 'on' => 'search'),
+            array('timing_id, event_id, list_title, list_role, timing_start, timing_end, timing_notes, created_at, created_by, modified_at, modified_by', 'safe', 'on' => 'search'),
         );
     }
 
@@ -66,7 +67,8 @@ class EventLists extends RActiveRecord {
         return array(
             'timing_id' => 'Timing',
             'event_id' => 'Event',
-            'list_title' => 'List Title',
+            'list_title' => 'Event Name',
+            'list_role' => 'Category',
             'timing_start' => 'Timing Start',
             'timing_end' => 'Timing End',
             'timing_notes' => 'Timing Notes',
@@ -94,6 +96,7 @@ class EventLists extends RActiveRecord {
         $criteria->compare('timing_id', $this->timing_id);
         $criteria->compare('event_id', $this->event_id);
         $criteria->compare('list_title', $this->list_title, true);
+        $criteria->compare('list_role',$this->list_role);
         $criteria->compare('timing_start', $this->timing_start, true);
         $criteria->compare('timing_end', $this->timing_end, true);
         $criteria->compare('timing_notes', $this->timing_notes, true);
@@ -119,7 +122,7 @@ class EventLists extends RActiveRecord {
             return $lists[$key];
         return $lists;
     }
-    
+
     protected function beforeSave() {
         if($this->isNewRecord){
             $this->timing_start = date('h:i:s', strtotime($this->timing_start));

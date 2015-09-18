@@ -45,7 +45,7 @@ class EventController extends Controller {
                 'users' => array('@'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('create', 'update', 'delete'),
+                'actions' => array('create', 'update', 'delete', 'notesupdate','vendors','updateVendor','getCategories'),
                 'expression' => 'UserIdentity::checkAdmin()',
                 'users' => array('@'),
             ),
@@ -65,33 +65,20 @@ class EventController extends Controller {
      */
     public function actionView($id) {
         $model = $this->loadModel($id);
-        $history_model = new EventHistory;
-        $this->performAjaxValidation($history_model);
-        if(!UserIdentity::checkAdmin()){
-            $valid_users = CJSON::decode($model->event_users);
-            if(!in_array(Yii::app()->user->id, $valid_users)){
-                throw new CHttpException(403, 'You are not authorized to perform this action');
-            }
+        $frmModel = new EventLists;
+
+        $this->performAjaxValidation($frmModel);
+
+        if (isset($_POST['EventLists'])) {
+            $frmModel->attributes = $_POST['EventLists'];
+            $frmModel->event_id = $id;
+            $frmModel->save();
+
+            Yii::app()->user->setFlash('success', 'Event Created Successfully!!!');
+            $this->refresh();
         }
-        
-        if(Yii::app()->request->isPostRequest){
-            $history_model->attributes = $_POST['EventHistory'];
-            if($history_model->save()){
-                Yii::app()->user->setFlash('success', 'Time modified Successfully!!!');
-                $this->refresh();
-            }
-        }
-        $export = isset($_REQUEST['export']) && $_REQUEST['export'] == 'PDF';
-        $compact = compact('model', 'export', 'history_model');
-        if ($export) {
-            $mPDF1 = Yii::app()->ePdf->mpdf();
-            $stylesheet = $this->pdfStyles();
-            $mPDF1->WriteHTML($stylesheet, 1);
-            $mPDF1->WriteHTML($this->renderPartial('view', $compact, true));
-            $mPDF1->Output("Event_view_{$id}.pdf", EYiiPdf::OUTPUT_TO_DOWNLOAD);
-        } else {
-            $this->render('view', $compact);
-        }
+
+        $this->render('view', compact('model', 'frmModel'));
     }
 
     /**
@@ -100,27 +87,47 @@ class EventController extends Controller {
      */
     public function actionCreate() {
         $model = new Event;
-        $lists[0] = new EventLists;
 
         // Uncomment the following line if AJAX validation is needed
-        $this->performAjaxValidation(array($model, $lists[0]));
+        $this->performAjaxValidation($model);
 //        $this->MyperformAjaxValidation($model, $lists[0]);
 
         if (isset($_POST['Event'])) {
             $model->attributes = $_POST['Event'];
             if ($model->save()) {
-                foreach ($_POST['EventLists'] as $key => $list_vals) {
-                    $list = new EventLists;
-                    $list->event_id = $model->event_id;
-                    $list->attributes = $list_vals;
-                    $list->save();
-                }
                 Yii::app()->user->setFlash('success', 'Event Created Successfully!!!');
-                $this->redirect(array('/site/event/index'));
+                $this->redirect(array('/site/event/view','id'=>$model->event_id));
             }
         }
 
         $this->render('create', compact('model', 'lists'));
+    }
+
+    public function actionVendors($id) {
+        $event = $this->loadModel($id);
+        $model = new EventVendors();
+        $model->unsetAttributes();
+        $model->ev_event_id = $id;
+
+        if (isset($_GET['EventVendors'])) {
+            $model->attributes = $_GET['EventVendors'];
+        }
+
+
+        $frmModel = new EventVendors;
+
+        $this->performAjaxValidation($frmModel);
+
+        if (isset($_POST['EventVendors'])) {
+            $frmModel->attributes = $_POST['EventVendors'];
+            $frmModel->ev_event_id = $id;
+            $frmModel->save();
+
+            Yii::app()->user->setFlash('success', 'Event Created Successfully!!!');
+            $this->refresh();
+        }
+
+        $this->render('vendors', compact('event','model', 'frmModel'));
     }
 
     /**
@@ -193,20 +200,6 @@ class EventController extends Controller {
     }
 
     /**
-     * Manages all models.
-     */
-    public function actionAdmin() {
-        $model = new Event('search');
-        $model->unsetAttributes();  // clear any default values
-        if (isset($_GET['Event']))
-            $model->attributes = $_GET['Event'];
-
-        $this->render('admin', array(
-            'model' => $model,
-        ));
-    }
-
-    /**
      * Returns the data model based on the primary key given in the GET variable.
      * If the data model is not found, an HTTP exception will be raised.
      * @param integer $id the ID of the model to be loaded
@@ -225,7 +218,7 @@ class EventController extends Controller {
      * @param Event $model the model to be validated
      */
     protected function performAjaxValidation($model) {
-        if (isset($_POST['ajax']) /*&& $_POST['ajax'] === 'event-form'*/) {
+        if (isset($_POST['ajax']) /* && $_POST['ajax'] === 'event-form' */) {
             echo CActiveForm::validate($model);
             Yii::app()->end();
         }
@@ -247,4 +240,14 @@ class EventController extends Controller {
         }
     }
 
+    public function actionNotesupdate() {
+        Yii::import('ext.editable.EditableSaver'); //or you can add import 'ext.editable.*' to config
+        $es = new EditableSaver('EventLists');  // 'User' is classname of model to be updated
+        $es->update();
+    }
+    public function actionUpdateVendor() {
+        Yii::import('ext.editable.EditableSaver'); //or you can add import 'ext.editable.*' to config
+        $es = new EditableSaver('EventVendors');  // 'User' is classname of model to be updated
+        $es->update();
+    }
 }

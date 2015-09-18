@@ -27,6 +27,7 @@ class User extends RActiveRecord {
 
     public $new_password;
     public $confirm_password;
+
     /**
      * @return string the associated database table name
      */
@@ -131,14 +132,15 @@ class User extends RActiveRecord {
         ));
     }
 
-     protected function afterValidate() {
+    protected function afterValidate() {
         if ($this->scenario == 'update' && !empty($this->confirm_password)) {
             $this->password_hash = Myclass::encrypt($this->confirm_password);
         }
         return parent::afterValidate();
     }
-    
+
     public function getFullname() {
-        return $this->user_firstname.' '.$this->user_lastname;
+        return $this->user_firstname . ' ' . $this->user_lastname;
     }
+
 }

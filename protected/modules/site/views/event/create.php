@@ -2,7 +2,7 @@
 /* @var $this EventController */
 /* @var $model Event */
 
-$this->title='Create Events';
+$this->title='Create Timeline';
 $this->breadcrumbs=array(
 	'Events'=>array('index'),
 	$this->title,

@@ -13,6 +13,7 @@ return array(
     'import' => array(
         'application.models.*',
         'application.components.*',
+         'ext.editable.*'
     ),
     'modules' => array(
         'site',
