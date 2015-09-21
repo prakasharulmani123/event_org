@@ -36,20 +36,33 @@
         <!--sidebar nav start-->
         <?php
         $is_admin = UserIdentity::checkAdmin();
+        $timeline_list = Event::model()->active()->findAll();
+        $lists = array();
+        foreach ($timeline_list as $timeline):
+            $label = "<span>$timeline->event_name</span><a class='m-left15' href='{$this->createUrl('/site/event/vendors',array('id'=>$timeline->event_id))}'><span>Vendors</span></a>";
+            $lists[] = array('label' => "$label", 'url' => array('/site/event/view','id'=>$timeline->event_id), 'active' => '0');
+        endforeach;
+        $lists[] = array('label' => "<span>+ Create New timeline</span>", 'url' => array('/site/event/create'), 'active' => '0');
+
         $this->widget('application.components.MyMenu', array(
             'activateParents' => true,
             'encodeLabel' => false,
             'activateItems' => true,
             'items' => array(
-                array('label' => '<i class="fa fa-dashboard"></i> <span>Dashboard</span>', 'url' => array('/site/default/index'), 'visible' => $is_admin),
-                array('label' => '<i class="fa fa-cog"></i> <span>Administration</span>', 'url' => '#',
+//                array('label' => '<span>Dashboard</span>', 'url' => array('/site/default/index'), 'visible' => $is_admin),
+                array('label' => '<span>Administration</span>', 'url' => '#',
                     'itemOptions' => array('class' => 'menu-list'),
                     'submenuOptions' => array('class' => 'sub-menu-list'),
                     'items' => array(
                         array('label' => '<span>Role</span>', 'url' => array('/site/role/index'), 'visible' => $is_admin, 'active' => '0'),
                         array('label' => '<span>User</span>', 'url' => array('/site/user/index'), 'visible' => $is_admin, 'active' => '0'),
-                        array('label' => '<span>Event</span>', 'url' => array('/site/event/index'), 'visible' => '1', 'active' => '0'),
+//                        array('label' => '<span>Event</span>', 'url' => array('/site/event/index'), 'visible' => '1', 'active' => '0'),
                     ),
+                ),
+                array('label' => '<span>Timelines</span>', 'url' => '#',
+                    'itemOptions' => array('class' => 'menu-list'),
+                    'submenuOptions' => array('class' => 'sub-menu-list'),
+                    'items' => $lists,
                 ),
             ),
             'htmlOptions' => array('class' => 'nav nav-pills nav-stacked custom-nav')

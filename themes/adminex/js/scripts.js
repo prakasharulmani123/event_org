@@ -167,7 +167,7 @@
     // popovers
 
     $('.popovers').popover();
-    
+
     $(".dropdown-toggle").dropdown();
 
 })(jQuery);
