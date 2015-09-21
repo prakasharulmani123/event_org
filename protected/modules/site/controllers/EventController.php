@@ -45,7 +45,7 @@ class EventController extends Controller {
                 'users' => array('@'),
             ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('create', 'update', 'delete', 'notesupdate','vendors','updateVendor','getCategories'),
+                'actions' => array('create', 'update', 'delete', 'timelineupdate', 'notesupdate', 'vendors', 'updateVendor', 'getCategories'),
                 'expression' => 'UserIdentity::checkAdmin()',
                 'users' => array('@'),
             ),
@@ -96,7 +96,7 @@ class EventController extends Controller {
             $model->attributes = $_POST['Event'];
             if ($model->save()) {
                 Yii::app()->user->setFlash('success', 'Event Created Successfully!!!');
-                $this->redirect(array('/site/event/view','id'=>$model->event_id));
+                $this->redirect(array('/site/event/view', 'id' => $model->event_id));
             }
         }
 
@@ -127,7 +127,7 @@ class EventController extends Controller {
             $this->refresh();
         }
 
-        $this->render('vendors', compact('event','model', 'frmModel'));
+        $this->render('vendors', compact('event', 'model', 'frmModel'));
     }
 
     /**
@@ -245,9 +245,16 @@ class EventController extends Controller {
         $es = new EditableSaver('EventLists');  // 'User' is classname of model to be updated
         $es->update();
     }
+
     public function actionUpdateVendor() {
         Yii::import('ext.editable.EditableSaver'); //or you can add import 'ext.editable.*' to config
         $es = new EditableSaver('EventVendors');  // 'User' is classname of model to be updated
+        $es->update();
+    }
+
+    public function actionTimelineupdate() {
+        Yii::import('ext.editable.EditableSaver'); //or you can add import 'ext.editable.*' to config
+        $es = new EditableSaver('Event');  // 'User' is classname of model to be updated
         $es->update();
     }
 }

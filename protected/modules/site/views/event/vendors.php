@@ -1,9 +1,28 @@
-<?php
-/* @var $this EventController */
-/* @var $model Event */
-$this->title = $event->event_name;
-$this->breadcrumbs = array($event->event_date => '#');
-?>
+<div class="timeline-title m-bot15">
+    <h3>
+        <?php
+        $this->widget('ext.editable.EditableField', array(
+            'model' => $event,
+            'attribute' => 'event_name',
+            'title' => 'Change Timeline',
+            'placement' => 'bottom',
+            'url' => $this->createUrl('/site/event/timelineupdate'),
+        ));
+        ?>
+    </h3>
+    <p class="timeline-date">
+        <?php
+        $this->widget('ext.editable.EditableField', array(
+            'type' => 'date',
+            'model' => $event,
+            'attribute' => 'event_date',
+            'title' => 'Change Timeline Date',
+            'placement' => 'bottom',
+            'url' => $this->createUrl('/site/event/timelineupdate'),
+        ));
+        ?>
+    </p>
+</div>
 
 
 
