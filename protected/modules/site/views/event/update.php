@@ -2,10 +2,10 @@
 /* @var $this EventController */
 /* @var $model Event */
 
-$this->title='Update Events: '. $model->event_name;
+$this->title='Update Timelines: '. $model->event_name;
 $this->breadcrumbs=array(
-	'Events'=>array('index'),
-	'Update Events',
+	'Timelines'=>array('index'),
+	'Update Timelines',
 );
 ?>
 

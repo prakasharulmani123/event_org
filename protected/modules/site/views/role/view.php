@@ -2,10 +2,10 @@
 /* @var $this RoleController */
 /* @var $model Role */
 
-$this->title = 'View Role:' . $model->role_id;
+$this->title = 'View Category:' . $model->role_id;
 $this->breadcrumbs = array(
-    'Roles' => array('index'),
-    'View ' . 'Role',
+    'Categories' => array('index'),
+    'View ' . 'Category',
 );
 ?>
 <div class="user-view">
@@ -45,7 +45,7 @@ $this->breadcrumbs = array(
     <?php }
     ?>
     <?php if ($export) { ?>
-        <h3 class="text-center">Role <?php echo $this->title ?></h3>
+        <h3 class="text-center">Category <?php echo $this->title ?></h3>
         <?php
     }
     ?>

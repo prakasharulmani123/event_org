@@ -67,7 +67,7 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
                     );
 
                     $this->widget('booster.widgets.TbExtendedGridView', array(
-                        'filter' => $model,
+//                        'filter' => $model,
                         'type' => 'striped bordered datatable',
                         'dataProvider' => $model->dataProvider(),
                         'responsiveTable' => true,

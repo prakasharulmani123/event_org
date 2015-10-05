@@ -2,10 +2,10 @@
 /* @var $this RoleController */
 /* @var $model Role */
 
-$this->title='Update Roles: '. $model->role_id;
+$this->title='Update Categories: '. $model->role_id;
 $this->breadcrumbs=array(
-	'Roles'=>array('index'),
-	'Update Roles',
+	'Categories'=>array('index'),
+	'Update Categories',
 );
 ?>
 

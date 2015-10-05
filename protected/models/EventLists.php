@@ -29,6 +29,12 @@ class EventLists extends RActiveRecord {
         return '{{event_lists}}';
     }
 
+    public function defaultScope() {
+        return array(
+            'order' => 'timing_start ASC'
+        );
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -70,7 +76,7 @@ class EventLists extends RActiveRecord {
             'list_role' => 'Category',
             'timing_start' => 'Time',
             'timing_notes' => 'Timing Notes',
-            'event_type' => 'Event Type',
+            'event_type' => 'Timeline Type',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'modified_at' => 'Modified At',
@@ -94,7 +100,7 @@ class EventLists extends RActiveRecord {
         $criteria->compare('timing_id', $this->timing_id);
         $criteria->compare('event_id', $this->event_id);
         $criteria->compare('list_title', $this->list_title, true);
-        $criteria->compare('list_role',$this->list_role);
+        $criteria->compare('list_role', $this->list_role);
         $criteria->compare('timing_start', $this->timing_start, true);
         $criteria->compare('timing_notes', $this->timing_notes, true);
         $criteria->compare('created_at', $this->created_at, true);
@@ -115,22 +121,23 @@ class EventLists extends RActiveRecord {
             'FX' => 'Fixed',
             'FL' => 'Flexible',
         );
-        if($key != null)
+        if ($key != null)
             return $lists[$key];
         return $lists;
     }
 
     protected function beforeSave() {
-        if($this->timing_start){
+        if ($this->timing_start) {
             $this->timing_start = date('H:i:s', strtotime($this->timing_start));
         }
         return parent::beforeSave();
     }
 
     protected function afterFind() {
-        if($this->timing_start){
+        if ($this->timing_start) {
             $this->timing_start = date('h:i A', strtotime($this->timing_start));
         }
         return parent::afterFind();
     }
+
 }

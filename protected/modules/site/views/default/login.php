@@ -11,6 +11,7 @@ $form = $this->beginWidget('CActiveForm', array(
     'enableAjaxValidation' => true,
     'clientOptions' => array(
         'validateOnSubmit' => true,
+        'validateOnChange' => false,
     ),
     'htmlOptions' => array('class' => 'form-signin', 'role' => 'form')
         ));
@@ -74,7 +75,7 @@ $form = $this->beginWidget('CActiveForm', array(
             </div>
             <div class="modal-footer">
                 <button data-dismiss="modal" class="btn btn-default" type="button">Cancel</button>
-                <?php echo CHtml::submitButton('Get Password', array('class' => 'btn btn-primary', 'name' => 'forgot')) ?>
+                <?php echo CHtml::submitButton('Get Password', array('class' => 'btn btn-success', 'name' => 'forgot')) ?>
             </div>
         </div>
         <?php $this->endWidget(); ?>

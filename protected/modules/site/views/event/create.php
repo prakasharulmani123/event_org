@@ -4,7 +4,7 @@
 
 $this->title='Create Timeline';
 $this->breadcrumbs=array(
-	'Events'=>array('index'),
+	'Timelines'=>array('index'),
 	$this->title,
 );
 ?>

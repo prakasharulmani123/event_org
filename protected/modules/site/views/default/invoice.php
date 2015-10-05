@@ -64,7 +64,7 @@
 
         <div class="col-xs-6">
 
-            <p class="lead">Event:</p>
+            <p class="lead">Timeline:</p>
             <table class="table">
                 <tr>
                     <th style="width:50%">Type:</th>
@@ -125,7 +125,7 @@
         <div class="col-xs-12">
             <button class="btn btn-default" onclick="window.print();"><i class="fa fa-print"></i> Print</button>
             <button class="btn btn-success pull-right"><i class="fa fa-credit-card"></i> Submit Payment</button>
-            <button class="btn btn-primary pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button>
+            <button class="btn btn-success pull-right" style="margin-right: 5px;"><i class="fa fa-download"></i> Generate PDF</button>
         </div>
     </div>-->
 </section>

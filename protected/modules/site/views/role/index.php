@@ -2,9 +2,9 @@
 /* @var $this RoleController */
 /* @var $dataProvider CActiveDataProvider */
 
-$this->title = 'Roles';
+$this->title = 'Categories';
 $this->breadcrumbs = array(
-    'Roles',
+    'Categories',
 );
 $themeUrl = $this->themeUrl;
 $cs = Yii::app()->getClientScript();
@@ -17,10 +17,10 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
     <div class="col-sm-12">
         <section class="panel">
             <header class="panel-heading">
-                Manage Role <?php
+                Manage Category <?php
         $this->widget(
                 'application.components.MyTbButton', array(
-            'label' => 'Create Role',
+            'label' => 'Create Category',
             'icon' => 'fa fa-plus',
             'url' => array('/site/role/create'),
             'buttonType' => 'link',
@@ -56,7 +56,7 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
                     );
 
                     $this->widget('booster.widgets.TbExtendedGridView', array(
-                        'filter' => $model,
+//                        'filter' => $model,
                         'type' => 'striped bordered datatable',
                         'dataProvider' => $model->dataProvider(),
                         'responsiveTable' => true,

@@ -13,7 +13,9 @@
  * @property integer $role_id
  * @property string $user_email
  * @property string $user_phone
+ * @property string $user_company
  * @property string $user_address
+ * @property string $user_avatar
  * @property string $status
  * @property string $created_at
  * @property string $created_by
@@ -27,6 +29,8 @@ class User extends RActiveRecord {
 
     public $new_password;
     public $confirm_password;
+
+    const FILE_SIZE = 5;
 
     /**
      * @return string the associated database table name
@@ -49,15 +53,17 @@ class User extends RActiveRecord {
             array('role_id, created_by, modified_by, user_phone', 'numerical', 'integerOnly' => true),
             array('username, user_firstname, user_lastname, user_phone', 'length', 'max' => 50),
             array('password_hash, password_reset_token', 'length', 'max' => 255),
-            array('user_email', 'length', 'max' => 100),
+            array('user_email, user_company', 'length', 'max' => 100),
             array('status', 'length', 'max' => 1),
             array('new_password, confirm_password', 'length', 'min' => 6),
-            array('confirm_password', 'compare', 'compareAttribute' => 'new_password', 'on' => 'reset,update'),
+            array('confirm_password', 'compare', 'compareAttribute' => 'new_password', 'on' => 'reset,update,user_update'),
             array('new_password, confirm_password', 'required', 'on' => 'reset'),
-            array('user_address, created_at, created_by, confirm_password, new_password', 'safe'),
+            array('user_avatar', 'length', 'max' => 1000),
+            array('user_avatar', 'file', 'allowEmpty' => true, 'maxSize' => 1024 * 1024 * self::FILE_SIZE, 'tooLarge' => 'File should be smaller than ' . self::FILE_SIZE . 'MB'),
+            array('user_address, created_at, created_by, confirm_password, new_password,user_avatar', 'safe'),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('user_id, username, password_hash, password_reset_token, user_firstname, user_lastname, role_id, user_email, user_phone, user_address, status, created_at, created_by, modified_at, modified_by', 'safe', 'on' => 'search'),
+            array('user_id, username, password_hash, password_reset_token, user_firstname, user_lastname, role_id, user_email, user_phone,user_company, user_address, status, created_at, created_by, modified_at, modified_by,user_avatar', 'safe', 'on' => 'search'),
         );
     }
 
@@ -81,12 +87,14 @@ class User extends RActiveRecord {
             'username' => 'Username',
             'password_hash' => 'Password Hash',
             'password_reset_token' => 'Password Reset Token',
-            'user_firstname' => 'Firstname',
+            'user_firstname' => 'First Name',
             'user_lastname' => 'Lastname',
-            'role_id' => 'Role',
+            'role_id' => 'Category',
             'user_email' => 'Email',
             'user_phone' => 'Phone',
+            'user_company' => 'Company Name',
             'user_address' => 'Address',
+            'user_avatar' => 'Avatar',
             'status' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -117,7 +125,9 @@ class User extends RActiveRecord {
         $criteria->compare('role_id', $this->role_id);
         $criteria->compare('user_email', $this->user_email, true);
         $criteria->compare('user_phone', $this->user_phone, true);
+        $criteria->compare('user_company', $this->user_company, true);
         $criteria->compare('user_address', $this->user_address, true);
+        $criteria->compare('user_avatar', $this->user_avatar, true);
         $criteria->compare('status', $this->status, true);
         $criteria->compare('created_at', $this->created_at, true);
         $criteria->compare('created_by', $this->created_by, true);
@@ -132,10 +142,23 @@ class User extends RActiveRecord {
         ));
     }
 
+    public function behaviors() {
+        return array(
+            'NUploadFile' => array(
+                'class' => 'ext.nuploadfile.NUploadFile',
+                'fileField' => 'user_avatar',
+            )
+        );
+    }
+
     protected function afterValidate() {
-        if ($this->scenario == 'update' && !empty($this->confirm_password)) {
+        if ($this->scenario == 'user_update' && !empty($this->confirm_password)) {
             $this->password_hash = Myclass::encrypt($this->confirm_password);
         }
+
+        $this->setUploadDirectory(UPLOAD_DIR);
+        $this->uploadFile();
+
         return parent::afterValidate();
     }
 

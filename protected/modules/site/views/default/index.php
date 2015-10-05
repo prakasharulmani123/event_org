@@ -29,7 +29,7 @@ $this->breadcrumbs = array(
                         <i class="fa fa-tag"></i>
                     </div>
                     <div class="col-xs-8">
-                        <span class="state-title">  Events  </span>
+                        <span class="state-title">  Timelines  </span>
                         <h4><?php echo $event_count = Event::model()->count(); ?></h4>
                     </div>
                 </div>
@@ -84,7 +84,7 @@ $this->breadcrumbs = array(
     <div class="col-md-4">
         <div class="panel">
             <header class="panel-heading">
-                Event progress
+                Timeline progress
                 <span class="tools pull-right">
                     <a href="javascript:;" class="fa fa-chevron-down"></a>
                     <a href="javascript:;" class="fa fa-times"></a>
@@ -271,7 +271,7 @@ $this->breadcrumbs = array(
                                         <div class="form-group todo-entry">
                                             <input type="text" placeholder="Enter your ToDo List" class="form-control" style="width: 100%">
                                         </div>
-                                        <button class="btn btn-primary pull-right" type="submit">+</button>
+                                        <button class="btn btn-success pull-right" type="submit">+</button>
                                     </form>
                                 </div>
                             </div>

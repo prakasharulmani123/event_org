@@ -2,9 +2,9 @@
 /* @var $this RoleController */
 /* @var $model Role */
 
-$this->title='Create Roles';
+$this->title='Create Categories';
 $this->breadcrumbs=array(
-	'Roles'=>array('index'),
+	'Categories'=>array('index'),
 	$this->title,
 );
 ?>

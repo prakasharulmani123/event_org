@@ -57,12 +57,19 @@ $this->breadcrumbs = array(
                                 <?php echo $form->error($model, 'confirm_password') ?>
                             </div>
                         </div>
+                        <div class="form-group">
+                            <?php echo $form->labelEx($model, 'user_avatar', array('class' => 'col-sm-2 control-label')); ?>
+                            <div class="col-sm-5">
+                                <?php echo $form->fileField($model, 'user_avatar', array('class' => 'form-control')); ?>
+                                <?php echo $form->error($model, 'user_avatar'); ?>
+                            </div>
+                        </div>
                     </div><!-- /.box-body -->
 
                     <div class="box-footer">
                         <div class="form-group">
                             <div class="col-sm-0 col-sm-offset-2">
-                                <?php echo CHtml::submitButton('Save', array('class' => 'btn btn-primary')) ?>
+                                <?php echo CHtml::submitButton('Save', array('class' => 'btn btn-success')) ?>
                             </div>
                         </div>
                     </div>

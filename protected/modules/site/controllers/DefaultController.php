@@ -49,7 +49,7 @@ class DefaultController extends Controller {
     }
 
     public function actionIndex() {
-        if(!UserIdentity::checkAdmin())
+        if (!UserIdentity::checkAdmin())
             throw new CHttpException(404, Yii::t('err', 'Page not Found.'));;
         $this->render('index');
     }
@@ -74,18 +74,21 @@ class DefaultController extends Controller {
         }
         $model = new LoginForm();
         $forgot_model = new LoginForm('forgotpass');
-        
+
         $this->performAjaxValidation(array($model, $forgot_model));
 
         if (isset($_POST['LoginForm']) && !isset($_POST['forgot'])) {
             $model->attributes = $_POST['LoginForm'];
             if ($model->validate() && $model->login()):
-                if(UserIdentity::checkAdmin())
+                if (UserIdentity::checkAdmin()) {
                     $this->goHome();
-                else
-                    $this->redirect(array('/site/event/index'));
+                } else {
+                    $timeline = Event::model()->active()->find();
+                    $re_url = ($timeline) ? array('/site/event/view', 'id' => $timeline->event_id) : array('/site/event/create');
+                    $this->redirect($re_url);
+                }
             endif;
-        }else if (isset($_POST['forgot'])) {
+        } else if (isset($_POST['forgot'])) {
             $user = User::model()->findByAttributes(array('user_email' => $_POST['LoginForm']['email']));
             if (empty($user)) {
                 Yii::app()->user->setFlash('danger', 'This Email Address Not Exists!!!');
@@ -138,7 +141,7 @@ class DefaultController extends Controller {
             $days = floor($seconds / 86400);
             $hours = floor(($seconds - ($days * 86400)) / 3600);
             $minutes = floor(($seconds - ($days * 86400) - ($hours * 3600)) / 60);
-            
+
             if ($minutes > 5) {
                 Yii::app()->user->setFlash('danger', "This Reset Link Expired. Please Try again.");
                 $this->redirect(array('/site/default/login'));
@@ -156,7 +159,7 @@ class DefaultController extends Controller {
         }
         $this->render('reset', array('model' => $model));
     }
-    
+
     public function actionLogout() {
         Yii::app()->user->logout();
         $this->redirect(array('/site/default/login'));
@@ -202,20 +205,7 @@ class DefaultController extends Controller {
     }
 
     public function actionProfile() {
-        $id = Yii::app()->user->id;
-        $model = User::model()->findByPk($id);
-        $model->setScenario('update');
-        $this->performAjaxValidation($model);
-
-        if (isset($_POST['User'])) {
-            $model->attributes = $_POST['User'];
-            if ($model->validate()):
-                $model->save(false);
-                Yii::app()->user->setFlash('success', 'Profile updated successfully');
-                $this->refresh();
-            endif;
-        }
-        $this->render('profile', compact('model'));
+        $this->forward("/site/user/update");
     }
 
     public function actionError() {
@@ -239,7 +229,7 @@ class DefaultController extends Controller {
     }
 
     public function actionDailycron() {
-        
+
     }
 
     public function actionTestmail() {
@@ -248,7 +238,7 @@ class DefaultController extends Controller {
         $subject = "Tetss";
 
         try {
-            mail("prakash.paramanandam@arkinfotec.com","My subject","Test");
+            mail("prakash.paramanandam@arkinfotec.com", "My subject", "Test");
         } catch (Exception $exc) {
             echo 'fail';
             echo $exc->getTraceAsString();
@@ -266,4 +256,5 @@ class DefaultController extends Controller {
             Yii::app()->end();
         }
     }
+
 }

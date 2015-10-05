@@ -20,12 +20,19 @@
 class Event extends RActiveRecord {
 
     public $search_users;
+
 //    public $userlist;
     /**
      * @return string the associated database table name
      */
     public function tableName() {
         return '{{event}}';
+    }
+
+    public function defaultScope() {
+        return array(
+            'order' => 'event_date ASC'
+        );
     }
 
     public function scopes() {
@@ -71,15 +78,15 @@ class Event extends RActiveRecord {
      */
     public function attributeLabels() {
         return array(
-            'event_id' => 'Event',
-            'event_name' => 'Event Name',
-            'event_date' => 'Event Date',
+            'event_id' => 'Timeline',
+            'event_name' => 'Timeline Name',
+            'event_date' => 'Timeline Date',
             'status' => 'Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
             'modified_at' => 'Modified At',
             'modified_by' => 'Modified By',
-            'userlist' => 'Event Users',
+            'userlist' => 'Timeline Users',
         );
     }
 
@@ -117,4 +124,5 @@ class Event extends RActiveRecord {
         $this->event_date = date('Y-m-d', strtotime($this->event_date));
         return parent::beforeSave();
     }
+
 }

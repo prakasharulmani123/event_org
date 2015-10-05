@@ -25,7 +25,7 @@ return array(
     'PHP_SHORT_DATE_FORMAT' => 'Y-m-d',
 
     //Product Settings
-    'SITEBASEURL' => 'http://wipocos.byethost16.com',
+    'SITEBASEURL' => 'http://demo.arkinfotec.in/event_org',
     'UPLOAD_DIR' => 'uploads',
     'EMAILHEADERIMAGE' => '/themes/adminlte/img/fa-globe.png',
 

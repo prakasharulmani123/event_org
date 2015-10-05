@@ -2,9 +2,9 @@
 /* @var $this EventController */
 /* @var $dataProvider CActiveDataProvider */
 
-$this->title = 'Events';
+$this->title = 'Timelines';
 $this->breadcrumbs = array(
-    'Events',
+    'Timelines',
 );
 $themeUrl = $this->themeUrl;
 $cs = Yii::app()->getClientScript();
@@ -17,10 +17,10 @@ $cs->registerScriptFile($themeUrl . '/js/datatables/dataTables.bootstrap.js', $c
     <div class="col-sm-12">
         <section class="panel">
             <header class="panel-heading">
-                Manage Event                <?php
+                Manage Timeline                <?php
                 $this->widget(
                         'application.components.MyTbButton', array(
-                    'label' => 'Create Event',
+                    'label' => 'Create Timeline',
                     'icon' => 'fa fa-plus',
                     'url' => array('/site/event/create'),
                     'buttonType' => 'link',

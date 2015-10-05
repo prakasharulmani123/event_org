@@ -63,8 +63,8 @@ class EventVendors extends CActiveRecord {
      */
     public function attributeLabels() {
         return array(
-            'evt_vendor' => 'Evt Vendor',
-            'ev_event_id' => 'Ev Event',
+            'evt_vendor' => 'Timeline Vendor',
+            'ev_event_id' => 'Timeline',
             'evt_vendor_name' => 'Vendor Name',
             'evt_vendor_email' => 'Email Address',
             'evt_vendor_phone' => 'Phone Number',

@@ -62,7 +62,7 @@
                     </div>
                     <div class="col-lg-2">
                         <label class=" control-label"> <p>&nbsp;  </p> </label>
-                        <?php echo CHtml::submitButton('ADD', array('class' => 'btn btn-primary')); ?>
+                        <?php echo CHtml::submitButton('ADD', array('class' => 'btn btn-success')); ?>
                     </div>
                 </div>
                 <?php $this->endWidget(); ?>
@@ -108,7 +108,6 @@
                 );
 
                 $this->widget('booster.widgets.TbExtendedGridView', array(
-                    'filter' => $model,
                     'type' => 'striped bordered datatable',
                     'dataProvider' => $model->dataProvider(),
                     'responsiveTable' => true,

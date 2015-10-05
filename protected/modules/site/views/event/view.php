@@ -33,7 +33,7 @@ $roles = Role::roleList();
                 <?php
                 $form = $this->beginWidget('CActiveForm', array(
                     'id' => 'event-form',
-                    'htmlOptions' => array('role' => 'form', 'class' => 'form-horizontal adminex-form'),
+                    'htmlOptions' => array('role' => 'form', 'class' => 'form-horizontal adminex-form text-center container'),
                     'clientOptions' => array(
                         'validateOnSubmit' => true,
                         'validateOnChange' => false,
@@ -47,7 +47,7 @@ $roles = Role::roleList();
                         <?php echo $form->textField($frmModel, 'list_title', array('class' => 'form-control', 'size' => 60, 'maxlength' => 255)); ?>
                         <?php echo $form->error($frmModel, 'list_title'); ?>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <?php echo $form->labelEx($frmModel, 'timing_start', array('class' => 'control-label')); ?>
                         <?php echo $form->textField($frmModel, "timing_start", array("class" => "form-control timepicker-default time-field")); ?>
                         <?php echo $form->error($frmModel, 'timing_start'); ?>
@@ -59,7 +59,7 @@ $roles = Role::roleList();
                     </div>
                     <div class="col-lg-2">
                         <label class=" control-label"> <p>&nbsp;  </p> </label>
-                        <?php echo CHtml::submitButton('ADD', array('class' => 'btn btn-primary', "style" => "margin-top:25px;")); ?>
+                        <?php echo CHtml::submitButton('ADD', array('class' => 'btn btn-success', "style" => "margin-top:25px;")); ?>
                     </div>
                 </div>
                 <?php $this->endWidget(); ?>
@@ -90,9 +90,7 @@ $roles = Role::roleList();
                                                     'url' => $this->createUrl('/site/event/notesupdate'),
                                                     'inputclass' => 'timepicker-default',
                                                 ));
-                                                ?>
-                                                &nbsp;
-                                                <?php
+                                                echo "-";
                                                 $this->widget('ext.editable.EditableField', array(
                                                     'model' => $list,
                                                     'attribute' => 'list_title',
@@ -141,6 +139,7 @@ $cs_pos_end = CClientScript::POS_END;
 $cs->registerCoreScript('jquery');
 $cs->registerScriptFile($themeUrl . '/js/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js', $cs_pos_end);
 $cs->registerScriptFile($themeUrl . '/js/bootstrap-timepicker/js/bootstrap-timepicker.js', $cs_pos_end);
+$cs->registerScriptFile($themeUrl . '/js/jquery.sticky.js', $cs_pos_end);
 $js = <<< EOD
 $(function(){
     $('.timepicker-default').timepicker({
@@ -164,6 +163,7 @@ $(function(){
             }).hide();
         }
     });
+    $("#event-form").sticky({topSpacing:60});
 });
 EOD;
 $cs->registerScript('view', $js);

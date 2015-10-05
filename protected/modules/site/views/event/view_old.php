@@ -164,7 +164,7 @@ $this->breadcrumbs = array(
                 <article class="timeline-item alt">
                     <div class="text-right">
                         <div class="time-show first">
-                            <a data-original-title="<?php echo $list->list_title; ?>" data-placement="top" data-toggle="tooltip " href="#" class="btn btn-primary tooltips" title="<?php echo $list->list_title; ?>"><?php echo strlen($list->list_title) > 20 ? substr($list->list_title, 0, 17).'..' : $list->list_title; echo '<br />'.date('h:i A', strtotime($list->timing_start)).'-'.date('h:i A', strtotime($list->timing_end)); ?></a>
+                            <a data-original-title="<?php echo $list->list_title; ?>" data-placement="top" data-toggle="tooltip " href="#" class="btn btn-success tooltips" title="<?php echo $list->list_title; ?>"><?php echo strlen($list->list_title) > 20 ? substr($list->list_title, 0, 17).'..' : $list->list_title; echo '<br />'.date('h:i A', strtotime($list->timing_start)).'-'.date('h:i A', strtotime($list->timing_end)); ?></a>
                         </div>
                     </div>
                 </article>
@@ -251,7 +251,7 @@ $this->beginWidget(
             <?php echo $form->error($history_model, 'event_hist_reason'); ?>
         </div>
     </div>
-    <?php echo CHtml::submitButton($history_model->isNewRecord ? 'Create' : 'Save', array('class' => $history_model->isNewRecord ? 'btn btn-success' : 'btn btn-primary')); ?>
+    <?php echo CHtml::submitButton($history_model->isNewRecord ? 'Create' : 'Save', array('class' => $history_model->isNewRecord ? 'btn btn-success' : 'btn btn-success')); ?>
     <?php $this->endWidget(); ?>
 </div>
 <?php $this->endWidget(); ?>

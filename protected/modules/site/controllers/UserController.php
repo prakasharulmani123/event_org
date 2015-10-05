@@ -114,7 +114,12 @@ class UserController extends Controller {
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id the ID of the model to be updated
      */
-    public function actionUpdate($id) {
+    public function actionUpdate($id = null, $profile = false) {
+        if (!$id) {
+            $id = Yii::app()->user->id;
+            $profile = true;
+        }
+
         $model = $this->loadModel($id);
         $model->setScenario('user_update');
 
@@ -125,12 +130,13 @@ class UserController extends Controller {
             $model->attributes = $_POST['User'];
             if ($model->save()) {
                 Yii::app()->user->setFlash('success', 'User Updated Successfully!!!');
-                $this->redirect(array('/site/user/index'));
+                $re_url = ($profile) ? array('/site/default/profile') : array('/site/user/index');
+                $this->redirect($re_url);
             }
         }
 
         $this->render('update', array(
-            'model' => $model,
+            'model' => $model, 'profile' => $profile
         ));
     }
 

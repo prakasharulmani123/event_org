@@ -4543,8 +4543,10 @@ ul.iconic-list li a:hover, ul.iconic-list li.active a {
 }
 
 .timeline-item.alt .panel {
-    margin-left: 222px;
-    width: 50%;
+/*    margin-left: 222px;
+    width: 50%;*/
+margin-left: 116px;
+width: 70%;
 }
 
 .timeline
@@ -4553,7 +4555,8 @@ ul.iconic-list li a:hover, ul.iconic-list li.active a {
 }
 
 .timeline-desk .panel {
-    width: 50%;
+/*    width: 50%;*/
+width: 70%;
 }
 
 .notification-menu .dropdown-toggle img {
@@ -4625,7 +4628,7 @@ ul.iconic-list li a:hover, ul.iconic-list li.active a {
 .popover-title{
     color: #000;
 }
-.event_name.editable {
+/*.event_name.editable {
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -4633,7 +4636,7 @@ ul.iconic-list li a:hover, ul.iconic-list li.active a {
     width: 80px;
     top: 13px;
     position: relative;
-}
+}*/
 
 .timeline-title h3 a{
     color: #2e2e2e;
@@ -4650,4 +4653,7 @@ ul.iconic-list li a:hover, ul.iconic-list li.active a {
     margin: 0;
     padding: 0;
 }
-
+#event-form-sticky-wrapper #event-form{
+    z-index: 1;
+    background-color: #fff;
+}

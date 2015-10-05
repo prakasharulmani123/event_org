@@ -80,7 +80,7 @@ class UserIdentity extends CUserIdentity {
         }
         return $return;
     }
-    
+
     public static function checkPrivilages($rank) {
         $return = false;
         if(isset(Yii::app()->user->id)){

@@ -66,8 +66,8 @@ class Role extends RActiveRecord {
      */
     public function attributeLabels() {
         return array(
-            'role_id' => 'Role',
-            'role_name' => 'Role Name',
+            'role_id' => 'Category',
+            'role_name' => 'Category Name',
             'rank' => 'Rank',
             'status' => 'Status',
             'created_at' => 'Created At',
@@ -151,7 +151,7 @@ class Role extends RActiveRecord {
             if (!empty($role->users))
                 foreach ($role->users as $user)
                     $roleUsers[$role->role_name][$user->user_id] = $user->user_firstname;
-            
+
         return $roleUsers;
     }
 
