@@ -127,7 +127,7 @@ class RoleController extends Controller {
             $model->delete();
         } catch (CDbException $e) {
             if ($e->errorInfo[1] == 1451) {
-                throw new CHttpException(400, Yii::t('err', 'Relation Restriction Error.'));
+                throw new CHttpException(400, Yii::t('err', 'This Category has users. So can\'t delete this category !!!'));
             } else {
                 throw $e;
             }

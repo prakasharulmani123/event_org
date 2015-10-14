@@ -114,7 +114,11 @@ class EventController extends Controller {
         }
 
 
-        $frmModel = new EventVendors;
+        if(isset($_POST['EventVendors']['evt_vendor']) && $_POST['EventVendors']['evt_vendor'] != ''){
+            $frmModel = EventVendors::model()->findByPk($_POST['EventVendors']['evt_vendor']);
+        }else{
+            $frmModel = new EventVendors;
+        }
 
         $this->performAjaxValidation($frmModel);
 
@@ -123,7 +127,7 @@ class EventController extends Controller {
             $frmModel->ev_event_id = $id;
             $frmModel->save();
 
-            Yii::app()->user->setFlash('success', 'Event Created Successfully!!!');
+            Yii::app()->user->setFlash('success', 'Event Saved Successfully!!!');
             $this->refresh();
         }
 

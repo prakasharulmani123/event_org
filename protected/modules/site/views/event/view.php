@@ -1,5 +1,6 @@
 <?php
 $roles = Role::roleList();
+$event_types = EventLists::eventtypes();
 ?>
 <div class="timeline-title m-bot15">
     <h3>
@@ -42,7 +43,7 @@ $roles = Role::roleList();
                 ));
                 ?>
                 <div class="form-group ">
-                    <div class="col-lg-4">
+                    <div class="col-lg-3">
                         <?php echo $form->labelEx($frmModel, 'list_title', array('class' => 'control-label')); ?>
                         <?php echo $form->textField($frmModel, 'list_title', array('class' => 'form-control', 'size' => 60, 'maxlength' => 255)); ?>
                         <?php echo $form->error($frmModel, 'list_title'); ?>
@@ -52,10 +53,15 @@ $roles = Role::roleList();
                         <?php echo $form->textField($frmModel, "timing_start", array("class" => "form-control timepicker-default time-field")); ?>
                         <?php echo $form->error($frmModel, 'timing_start'); ?>
                     </div>
-                    <div class="col-lg-3">
+                    <div class="col-lg-2">
                         <?php echo $form->labelEx($frmModel, 'list_role', array('class' => 'control-label')); ?>
                         <?php echo $form->dropDownList($frmModel, "list_role", $roles, array("class" => "form-control m-bot15", "prompt" => "Select Category")); ?>
                         <?php echo $form->error($frmModel, 'list_role'); ?>
+                    </div>
+                    <div class="col-lg-2">
+                        <?php echo $form->labelEx($frmModel, 'event_type', array('class' => 'control-label')); ?>
+                        <?php echo $form->dropDownList($frmModel, "event_type", $event_types, array("class" => "form-control m-bot15", "prompt" => "Select Type")); ?>
+                        <?php echo $form->error($frmModel, 'event_type'); ?>
                     </div>
                     <div class="col-lg-2">
                         <label class=" control-label"> <p>&nbsp;  </p> </label>
@@ -105,6 +111,17 @@ $roles = Role::roleList();
                                                     'source' => $roles,
                                                     'type' => 'select',
                                                     'title' => 'Change Category',
+                                                    'url' => $this->createUrl('/site/event/notesupdate'),
+                                                    'inputclass' => 'input-md',
+                                                    'htmlOptions' => array('class' => 'event_name')
+                                                ));
+                                                echo "<br />";
+                                                $this->widget('ext.editable.EditableField', array(
+                                                    'model' => $list,
+                                                    'attribute' => 'event_type',
+                                                    'source' => $event_types,
+                                                    'type' => 'select',
+                                                    'title' => 'Change Type',
                                                     'url' => $this->createUrl('/site/event/notesupdate'),
                                                     'inputclass' => 'input-md',
                                                     'htmlOptions' => array('class' => 'event_name')
