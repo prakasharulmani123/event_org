@@ -134,6 +134,8 @@ class User extends RActiveRecord {
         $criteria->compare('modified_at', $this->modified_at);
         $criteria->compare('modified_by', $this->modified_by);
 
+        $criteria->addNotInCondition('role_id', array(1));
+
         return new CActiveDataProvider($this, array(
             'criteria' => $criteria,
             'pagination' => array(

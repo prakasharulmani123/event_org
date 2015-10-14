@@ -98,6 +98,17 @@ $roles = Role::roleList();
                                                     'url' => $this->createUrl('/site/event/notesupdate'),
                                                     'htmlOptions' => array('class' => 'event_name')
                                                 ));
+                                                echo "<br />";
+                                                $this->widget('ext.editable.EditableField', array(
+                                                    'model' => $list,
+                                                    'attribute' => 'list_role',
+                                                    'source' => $roles,
+                                                    'type' => 'select',
+                                                    'title' => 'Change Category',
+                                                    'url' => $this->createUrl('/site/event/notesupdate'),
+                                                    'inputclass' => 'input-md',
+                                                    'htmlOptions' => array('class' => 'event_name')
+                                                ));
                                                 ?>
                                             </p>
                                             <p>
