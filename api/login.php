@@ -2,10 +2,10 @@
 
 include_once 'includes/config.php';
 include_once 'includes/functions.php';
+$status = false;
 $result = array();
 $username = isset($_REQUEST['username']) ? mysql_real_escape_string($_REQUEST['username']) : '';
 $password = isset($_REQUEST['password']) ? mysql_real_escape_string($_REQUEST['password']) : '';
-$status = false;
 
 if (!empty($username) && !empty($password)) {
     $password = encrypt_pass($password);
@@ -19,12 +19,12 @@ if (!empty($username) && !empty($password)) {
         $role = $row_users['role_id'];
 
         $status = true;
-    }
 
-    $result['user_firstname'] = $firstname;
-    $result['user_id'] = $user_id;
-    $result['role'] = $role;
+        $result['user_firstname'] = $firstname;
+        $result['user_id'] = $user_id;
+        $result['role'] = $role;
+    }
 }
 
-$response = array_merge(array('status'=>$status),array_filter($result));
+$response = array_merge(array('status' => $status), array_filter($result));
 echo json_encode($response, true);
