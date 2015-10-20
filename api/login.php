@@ -4,7 +4,7 @@ include_once 'includes/config.php';
 include_once 'includes/functions.php';
 $result = array();
 $username = isset($_REQUEST['username']) ? filter_input(INPUT_REQUEST, 'username', FILTER_VALIDATE_EMAIL) : '';
-$password = isset($_REQUEST['password']) ? filter_input(INPUT_REQUEST, 'password', FILTER_VALIDATE_EMAIL) : '';
+$password = isset($_REQUEST['password']) ? filter_input(INPUT_REQUEST, 'password') : '';
 
 if (!empty($username) && !empty($password)) {
     $password = encrypt_pass($password);
