@@ -116,7 +116,7 @@ class EventLists extends RActiveRecord {
         ));
     }
 
-    public function eventtypes($key = null) {
+    public static function eventtypes($key = null) {
         $lists = array(
             'FX' => 'Fixed',
             'FL' => 'Flexible',
