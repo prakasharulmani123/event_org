@@ -32,7 +32,6 @@ class WebServicesAPI {
             $password = "&Fzk*^A1rd%T";
             $dbname = "rajencba_event_org";
         }
-
         $this->db = new mysqli($hostname, $username, $password, $dbname);
         $this->db->autocommit(FALSE);
     }
@@ -44,8 +43,8 @@ class WebServicesAPI {
 
     function login() {
         $this->result = array('msg' => "Incorrect username/password");
-        $username = isset($_REQUEST['username']) ? mysql_real_escape_string($_REQUEST['username']) : '';
-        $password = isset($_REQUEST['password']) ? mysql_real_escape_string($_REQUEST['password']) : '';
+        $username = isset($_REQUEST['username']) ? mysqli_real_escape_string($this->db, $_REQUEST['username']) : '';
+        $password = isset($_REQUEST['password']) ? mysqli_real_escape_string($this->db, $_REQUEST['password']) : '';
 
         if (!empty($username) && !empty($password)) {
             $password = encrypt_pass($password);
@@ -68,7 +67,7 @@ class WebServicesAPI {
     }
 
     function eventlist() {
-        $userid = isset($_REQUEST['userid']) ? mysql_real_escape_string($_REQUEST['userid']) : '';
+        $userid = isset($_REQUEST['userid']) ? mysqli_real_escape_string($this->db, $_REQUEST['userid']) : '';
         $record = $this->db->query("SELECT * from `evt_event` where status='1' and created_by='$userid' ORDER BY event_date");
 
         if ($record->num_rows > 0) {
@@ -81,23 +80,7 @@ class WebServicesAPI {
                 $result_event[$k]['event_id'] = $event_id;
                 $result_event[$k]['event_name'] = $event_name;
                 $result_event[$k]['event_date'] = $event_date;
-
-                $record_list = $this->db->query("SELECT el.*,er.role_name FROM `evt_event_lists` AS el, evt_role AS er WHERE el.list_role=er.role_id AND el.event_id='$event_id' AND er.status='1' ORDER BY el.timing_start ASC");
-
-                if ($record_list->num_rows > 0) {
-                    $j = 0;
-                    while ($row_eventlist = $record_list->fetch_assoc()) {
-                        $timing_id = $row_eventlist['timing_id'];
-                        $event_type = ($row_eventlist['event_type'] == 'FX') ? 'Fixed' : 'Flexible';
-                        $_event[$j]['list_title'] = $row_eventlist['list_title'];
-                        $_event[$j]['role_name'] = $row_eventlist['role_name'];
-                        $_event[$j]['event_type'] = $event_type;
-                        $_event[$j]['timing_start'] = date('h:i A', strtotime($row_eventlist['timing_start']));
-                        $j++;
-                    }
-                    $result_event[$k]['event_cats'] = $_event;
-                    $record_list->free();
-                }
+                $result_event[$k]['event_cats'] = $this->eventlist_sub($event_id);
 
                 $k++;
             }
@@ -107,8 +90,36 @@ class WebServicesAPI {
         }
     }
 
+    function eventlist_sub($event_id = null, $direct = false) {
+        if (is_null($event_id)) {
+            $event_id = isset($_REQUEST['event_id']) ? mysqli_real_escape_string($this->db, $_REQUEST['event_id']) : '';
+            $direct = true;
+        }
+        $record_list = $this->db->query("SELECT el.*,er.role_name FROM `evt_event_lists` AS el, evt_role AS er WHERE el.list_role=er.role_id AND el.event_id='$event_id' AND er.status='1' ORDER BY el.timing_start ASC");
+
+        if ($record_list->num_rows > 0) {
+            $j = 0;
+            while ($row_eventlist = $record_list->fetch_assoc()) {
+                $timing_id = $row_eventlist['timing_id'];
+                $event_type = ($row_eventlist['event_type'] == 'FX') ? 'Fixed' : 'Flexible';
+                $_event[$j]['list_title'] = $row_eventlist['list_title'];
+                $_event[$j]['role_name'] = $row_eventlist['role_name'];
+                $_event[$j]['event_type'] = $event_type;
+                $_event[$j]['timing_start'] = date('h:i A', strtotime($row_eventlist['timing_start']));
+                $j++;
+            }
+            if ($direct):
+                $this->status = true;
+                $this->result = array("event_cats"=>$_event);
+            else:
+                return $_event;
+            endif;
+            $record_list->free();
+        }
+    }
+
     function vendorslist() {
-        $userid = isset($_REQUEST['userid']) ? mysql_real_escape_string($_REQUEST['userid']) : '';
+        $userid = isset($_REQUEST['userid']) ? mysqli_real_escape_string($this->db, $_REQUEST['userid']) : '';
         $get_query = ($userid > 0 && $userid != '') ? " and created_by='$userid' " : "";
 
         $record = $this->db->query("SELECT * from `evt_event` where status='1' $get_query ORDER BY event_date");
