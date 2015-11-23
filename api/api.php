@@ -7,7 +7,7 @@ $mode = isset($_REQUEST['mode']) ? trim($_REQUEST['mode']) : '';
 try {
     $webService = new WebServicesAPI();
     $webService->$mode();
-    $response = array_merge(array('status' => $webService->status), array_filter($webService->result));
+    $response = array_merge(array('status' => $webService->status), $webService->result);
     if($_REQUEST['debug'] == 'true'):
         echo "<pre>"; print_r($response); exit;
     endif;
