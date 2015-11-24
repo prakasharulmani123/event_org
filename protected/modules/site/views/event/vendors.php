@@ -41,31 +41,31 @@
                     ),
                     'enableAjaxValidation' => true,
                 ));
-                $role_lists = Role::roleList();
+                $role_lists = CHtml::listData($event->eventlists, 'list_role', 'listRole.role_name');
                 echo $form->hiddenField($frmModel, 'evt_vendor');
                 ?>
                 <div class="form-group ">
-                    <div class="col-lg-6">
-                        <?php echo $form->textField($frmModel, 'evt_vendor_name', array('class' => 'form-control m-bot15', 'size' => 60, 'maxlength' => 255, 'placeholder' => $frmModel->getAttributeLabel('evt_vendor_name'))); ?>
-                        <?php echo $form->error($frmModel, 'evt_vendor_name'); ?>
-                    </div>
-                    <div class="col-lg-6">
-                        <?php echo $form->textField($frmModel, 'evt_vendor_email', array('class' => 'form-control m-bot15', 'size' => 60, 'maxlength' => 255, 'placeholder' => $frmModel->getAttributeLabel('evt_vendor_email'))); ?>
-                        <?php echo $form->error($frmModel, 'evt_vendor_email'); ?>
+                    <div class="col-lg-4">
+                        <?php
+                        echo CHtml::dropDownList('category_id', '', $role_lists, array(
+                            "class" => "form-control",
+                            'prompt' => 'Select Category',
+                            'ajax' => array(
+                                'type' => 'POST', //request type
+                                'url' => CController::createUrl('/site/event/getusers'), //url to call.
+                                'update' => '#EventVendors_evt_user_id',
+                        )));
+                        ?>
                     </div>
                     <div class="col-lg-4">
-                        <?php echo $form->textField($frmModel, 'evt_vendor_phone', array('class' => 'form-control', 'size' => 60, 'maxlength' => 255, 'placeholder' => $frmModel->getAttributeLabel('evt_vendor_phone'))); ?>
-                        <?php echo $form->error($frmModel, 'evt_vendor_phone'); ?>
-                    </div>
-                    <div class="col-lg-4">
-                        <?php echo $form->dropDownList($frmModel, "evt_vendor_role", $role_lists, array("class" => "form-control", "prompt" => "Select Category")); ?>
-                        <?php echo $form->error($frmModel, 'evt_vendor_role'); ?>
+                        <?php echo $form->dropDownList($frmModel, "evt_user_id", array(), array("class" => "form-control", "prompt" => "Select Users")); ?>
+                        <?php echo $form->error($frmModel, 'evt_user_id'); ?>
                     </div>
                     <div class="col-lg-1">
                         <?php echo CHtml::submitButton('ADD', array('class' => 'btn btn-success', 'id' => 'add-edit')); ?>
                     </div>
                     <div class="col-lg-2">
-                        <?php echo CHtml::resetButton('Cancel', array('class' => 'btn', 'onclick' => '$("#EventVendors_evt_vendor").val(""); $("#add-edit").val("ADD");')); ?>
+                        <?php echo CHtml::resetButton('Cancel', array('class' => 'btn', 'onclick' => '$("#event-form").reset();')); ?>
                     </div>
                 </div>
                 <?php $this->endWidget(); ?>
@@ -74,60 +74,23 @@
                 <?php
                 $gridColumns = array(
                     array(
-                        'class' => 'ext.editable.EditableColumn',
-                        'name' => 'evt_vendor_name',
-                        'editable' => array('url' => $this->createUrl('/site/event/updateVendor'))
+                        'name' => 'evt_user_id',
+                        'value' => '$data->evtUser->fullname'
                     ),
                     array(
-                        'class' => 'ext.editable.EditableColumn',
-                        'name' => 'evt_vendor_email',
-                        'editable' => array('url' => $this->createUrl('/site/event/updateVendor'))
-                    ),
-                    array(
-                        'class' => 'ext.editable.EditableColumn',
-                        'name' => 'evt_vendor_phone',
-                        'editable' => array('url' => $this->createUrl('/site/event/updateVendor'))
-                    ),
-                    array(
-                        'class' => 'ext.editable.EditableColumn',
-                        'name' => 'evt_vendor_role',
-                        'filter' => $role_lists,
-                        'editable' => array(
-                            'type' => 'select',
-                            'url' => $this->createUrl('/site/event/updateVendor'),
-                            'source' => $role_lists,
-//                                'options' => array(
-//                                    'display' => 'js: function(value, sourceData) {
-//                                        var selected = $.grep(sourceData, function(o){ return value == o.value; }),
-//                                        colors = {1: "green", 2: "blue", 3: "red", 4: "gray"};
-//                                        $(this).text(selected[0].text).css("color", colors[value]);
-//                                    }',
-//                                    'onSave' => 'js: function(e, params) {
-//                                        console && console.log("saved value: "+params.newValue);
-//                                    }',
-//                                ),
-                        )
+                        'header' => 'Role',
+                        'value' => '$data->evtUser->role->role_name'
                     ),
                     array(
                         'header' => 'Actions',
                         'class' => 'application.components.MyActionButtonColumn',
                         'htmlOptions' => array('style' => 'width: 180px;;text-align:center', 'vAlign' => 'middle', 'class' => 'action_column'),
-                        'template' => '{update_vendor}',
+                        'template' => '{delete_vendor}',
                         'buttons' => array(
-                            'update_vendor' => array(
-                                'label' => '<i class="fa fa-pencil"></i>',
-                                'options' => array(
-                                    'title' => 'Edit',
-                                ),
-                                'click' => 'js: function(){
-                                    $("#EventVendors_evt_vendor_name").val($(this).closest("tr").find("td:nth-child(1) a").html());
-                                    $("#EventVendors_evt_vendor_email").val($(this).closest("tr").find("td:nth-child(2) a").html());
-                                    $("#EventVendors_evt_vendor_phone").val($(this).closest("tr").find("td:nth-child(3) a").html());
-                                    $("#EventVendors_evt_vendor_role").val($(this).closest("tr").find("td:nth-child(4) a").data("value"));
-                                    $("#EventVendors_evt_vendor").val($(this).closest("tr").find("td:nth-child(1) a").data("pk"));
-                                    $("#add-edit").val("Edit");
-                                }
-                                ',
+                            'delete_vendor' => array(
+                                'url' => 'Yii::app()->createUrl("/site/event/vendorsdelete", array("id"=>$data->evt_vendor))',
+                                'label' => '<i class="glyphicon glyphicon-trash"></i>',
+                                'options' => array('title' => 'Delete', 'class' => 'delete','confirm' => "Are you sure want to delete?"),
                             ),
                         ),
                     ),

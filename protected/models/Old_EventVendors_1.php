@@ -5,15 +5,14 @@
  *
  * The followings are the available columns in table '{{event_vendors}}':
  * @property integer $evt_vendor
- * @property integer $evt_event_id
- * @property integer $evt_user_id
+ * @property integer $ev_event_id
+ * @property string $evt_vendor_name
+ * @property string $evt_vendor_email
+ * @property string $evt_vendor_phone
+ * @property integer $evt_vendor_role
  * @property string $is_status
  * @property string $created_at
  * @property integer $created_by
- *
- * The followings are the available model relations:
- * @property Event $evtEvent
- * @property User $evtUser
  */
 class EventVendors extends CActiveRecord {
 
@@ -26,10 +25,8 @@ class EventVendors extends CActiveRecord {
 
     public function scopes() {
         $alias = $this->getTableAlias(false, FALSE);
-        $uid = Yii::app()->user->id;
         return array(
-            'active' => array('condition' => "$alias.is_status = '1'"),
-            'mine' => array('condition' => "$alias.evt_user_id = '{$uid}'")
+            'active' => array('condition' => "$alias.is_status = '1'")
         );
     }
 
@@ -40,12 +37,14 @@ class EventVendors extends CActiveRecord {
         // NOTE: you should only define rules for those attributes that
         // will receive user inputs.
         return array(
-            array('evt_event_id, evt_user_id, created_by', 'required'),
-            array('evt_event_id, evt_user_id, created_by', 'numerical', 'integerOnly' => true),
+            array('ev_event_id, evt_vendor_name, evt_vendor_email, evt_vendor_phone, evt_vendor_role, created_by', 'required'),
+            array('evt_vendor_email', 'email'),
+            array('ev_event_id, evt_vendor_role, created_by', 'numerical', 'integerOnly' => true),
+            array('evt_vendor_name, evt_vendor_email, evt_vendor_phone', 'length', 'max' => 100),
             array('is_status', 'length', 'max' => 1),
             // The following rule is used by search().
             // @todo Please remove those attributes that should not be searched.
-            array('evt_vendor, evt_event_id, evt_user_id, is_status, created_at, created_by', 'safe', 'on' => 'search'),
+            array('evt_vendor, ev_event_id, evt_vendor_name, evt_vendor_email, evt_vendor_phone, evt_vendor_role, is_status, created_at, created_by', 'safe', 'on' => 'search'),
         );
     }
 
@@ -56,8 +55,6 @@ class EventVendors extends CActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
-            'evtEvent' => array(self::BELONGS_TO, 'Event', 'evt_event_id'),
-            'evtUser' => array(self::BELONGS_TO, 'User', 'evt_user_id'),
         );
     }
 
@@ -66,9 +63,12 @@ class EventVendors extends CActiveRecord {
      */
     public function attributeLabels() {
         return array(
-            'evt_vendor' => 'Evt Vendor',
-            'evt_event_id' => 'Ev Event',
-            'evt_user_id' => 'Vendor',
+            'evt_vendor' => 'Timeline Vendor',
+            'ev_event_id' => 'Timeline',
+            'evt_vendor_name' => 'Vendor Name',
+            'evt_vendor_email' => 'Email Address',
+            'evt_vendor_phone' => 'Phone Number',
+            'evt_vendor_role' => 'Category',
             'is_status' => 'Is Status',
             'created_at' => 'Created At',
             'created_by' => 'Created By',
@@ -89,8 +89,11 @@ class EventVendors extends CActiveRecord {
         $criteria = new CDbCriteria;
 
         $criteria->compare('evt_vendor', $this->evt_vendor);
-        $criteria->compare('evt_event_id', $this->evt_event_id);
-        $criteria->compare('evt_user_id', $this->evt_user_id);
+        $criteria->compare('ev_event_id', $this->ev_event_id);
+        $criteria->compare('evt_vendor_name', $this->evt_vendor_name, true);
+        $criteria->compare('evt_vendor_email', $this->evt_vendor_email, true);
+        $criteria->compare('evt_vendor_phone', $this->evt_vendor_phone, true);
+        $criteria->compare('evt_vendor_role', $this->evt_vendor_role);
         $criteria->compare('is_status', $this->is_status, true);
         $criteria->compare('created_at', $this->created_at, true);
         $criteria->compare('created_by', $this->created_by);
@@ -109,4 +112,5 @@ class EventVendors extends CActiveRecord {
         }
         return parent::beforeValidate();
     }
+
 }

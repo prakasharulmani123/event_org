@@ -36,7 +36,13 @@
         <!--sidebar nav start-->
         <?php
         $is_admin = UserIdentity::checkAdmin();
-        $timeline_list = Event::model()->active()->findAll();
+        $timeline_list = Event::model()->active();
+        if (!$is_admin) {
+            $timeline_list = Event::model()->active()->mine()->findAll();
+        } else {
+            $timeline_list = Event::model()->active()->findAll();
+        }
+
         $lists = array();
         foreach ($timeline_list as $timeline):
             $label = "<span>$timeline->event_name</span><a class='m-left15' href='{$this->createUrl('/site/event/vendors', array('id' => $timeline->event_id))}'><span>Vendors</span></a>";

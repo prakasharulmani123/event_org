@@ -18,6 +18,8 @@
  * @property integer $modified_by
  *
  * The followings are the available model relations:
+ * @property EventHistory[] $eventHistories
+ * @property Role $listRole
  * @property Event $event
  */
 class EventLists extends RActiveRecord {
@@ -61,6 +63,7 @@ class EventLists extends RActiveRecord {
         // class name for the relations automatically generated below.
         return array(
             'eventHistories' => array(self::HAS_MANY, 'EventHistory', 'event_list_id'),
+            'listRole' => array(self::BELONGS_TO, 'Role', 'list_role'),
             'event' => array(self::BELONGS_TO, 'Event', 'event_id'),
         );
     }

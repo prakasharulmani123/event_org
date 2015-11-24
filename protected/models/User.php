@@ -165,7 +165,7 @@ class User extends RActiveRecord {
     }
 
     public function getFullname() {
-        return $this->user_firstname . ' ' . $this->user_lastname;
+        return ucwords($this->user_firstname . ' ' . $this->user_lastname);
     }
 
 }

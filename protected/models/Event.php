@@ -16,6 +16,7 @@
  *
  * The followings are the available model relations:
  * @property EventLists[] $eventlists
+ * @property EventVendors[] $eventVendors
  */
 class Event extends RActiveRecord {
 
@@ -37,8 +38,10 @@ class Event extends RActiveRecord {
 
     public function scopes() {
         $alias = $this->getTableAlias(false, FALSE);
+        $uid = Yii::app()->user->id;
         return array(
-            'active' => array('condition' => "$alias.status = '1'")
+            'active' => array('condition' => "$alias.status = '1'"),
+            'mine' => array('with'=>array('eventVendors'),'condition' => "eventVendors.evt_user_id = '{$uid}'")
         );
     }
 
@@ -68,6 +71,7 @@ class Event extends RActiveRecord {
         // class name for the relations automatically generated below.
         return array(
             'eventlists' => array(self::HAS_MANY, 'EventLists', 'event_id'),
+            'eventVendors' => array(self::HAS_MANY, 'EventVendors', 'evt_event_id'),
             'createdBy' => array(self::BELONGS_TO, 'User', 'created_by'),
             'modifiedBy' => array(self::BELONGS_TO, 'User', 'modified_by'),
         );

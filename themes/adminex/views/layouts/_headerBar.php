@@ -38,7 +38,7 @@
 
                     echo CHtml::image($uAvatar, Yii::app()->user->name, array());
 
-                    echo Yii::app()->user->name; ?>
+                    echo ucfirst(Yii::app()->user->name); ?>
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-usermenu pull-right">

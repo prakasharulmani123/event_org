@@ -40,15 +40,15 @@ class EventController extends Controller {
 //                'users' => array('*'),
 //            ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('index', 'view', 'admin', 'pdf', 'download', 'addTabularInputsAsTable'),
+                'actions' => array('index', 'view', 'admin', 'pdf', 'download', 'addTabularInputsAsTable', 'getusers','vendors', 'vendorsdelete','create', 'update', 'delete', 'timelineupdate', 'notesupdate', 'updateVendor', 'getCategories'),
                 'expression' => 'UserIdentity::checkAccess()',
                 'users' => array('@'),
             ),
-            array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('create', 'update', 'delete', 'timelineupdate', 'notesupdate', 'vendors', 'updateVendor', 'getCategories'),
-                'expression' => 'UserIdentity::checkAdmin()',
-                'users' => array('@'),
-            ),
+//            array('allow', // allow authenticated user to perform 'create' and 'update' actions
+//                'actions' => array('create', 'update', 'delete', 'timelineupdate', 'notesupdate', 'updateVendor', 'getCategories'),
+//                'expression' => 'UserIdentity::checkAdmin()',
+//                'users' => array('@'),
+//            ),
             array('allow', // allow admin user to perform 'admin' and 'delete' actions
                 'actions' => array(''),
                 'users' => array('admin'),
@@ -107,16 +107,16 @@ class EventController extends Controller {
         $event = $this->loadModel($id);
         $model = new EventVendors();
         $model->unsetAttributes();
-        $model->ev_event_id = $id;
+        $model->evt_event_id = $id;
 
         if (isset($_GET['EventVendors'])) {
             $model->attributes = $_GET['EventVendors'];
         }
 
 
-        if(isset($_POST['EventVendors']['evt_vendor']) && $_POST['EventVendors']['evt_vendor'] != ''){
+        if (isset($_POST['EventVendors']['evt_vendor']) && $_POST['EventVendors']['evt_vendor'] != '') {
             $frmModel = EventVendors::model()->findByPk($_POST['EventVendors']['evt_vendor']);
-        }else{
+        } else {
             $frmModel = new EventVendors;
         }
 
@@ -124,8 +124,11 @@ class EventController extends Controller {
 
         if (isset($_POST['EventVendors'])) {
             $frmModel->attributes = $_POST['EventVendors'];
-            $frmModel->ev_event_id = $id;
-            $frmModel->save();
+            $frmModel->evt_event_id = $id;
+            if (!$frmModel->save()) {
+                echo CHtml::errorSummary($frmModel);
+                exit;
+            }
 
             Yii::app()->user->setFlash('success', 'Event Saved Successfully!!!');
             $this->refresh();
@@ -261,4 +264,36 @@ class EventController extends Controller {
         $es = new EditableSaver('Event');  // 'User' is classname of model to be updated
         $es->update();
     }
+
+    public function actionGetusers() {
+        if (isset($_REQUEST['category_id'])) {
+            $data = User::model()->findAll('role_id=:cat_id', array(':cat_id' => $_REQUEST['category_id']));
+
+            $data = CHtml::listData($data, 'user_id', 'fullname');
+            foreach ($data as $value => $name) {
+                echo CHtml::tag('option', array('value' => $value), CHtml::encode($name), true);
+            }
+            Yii::app()->end();
+        }
+    }
+
+    public function actionVendorsdelete($id) {
+        try {
+            $model = EventVendors::model()->findByPk($id);
+            $model->delete();
+        } catch (CDbException $e) {
+            if ($e->errorInfo[1] == 1451) {
+                throw new CHttpException(400, Yii::t('err', 'Relation Restriction Error.'));
+            } else {
+                throw $e;
+            }
+        }
+
+        // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
+        if (!isset($_GET['ajax'])) {
+            Yii::app()->user->setFlash('success', 'Event Vendors Deleted Successfully!!!');
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('/site/event/vendors','id'=>$model->evt_event_id));
+        }
+    }
+
 }
