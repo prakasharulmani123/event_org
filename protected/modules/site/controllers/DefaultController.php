@@ -50,7 +50,8 @@ class DefaultController extends Controller {
 
     public function actionIndex() {
         if (!UserIdentity::checkAdmin())
-            throw new CHttpException(404, Yii::t('err', 'Page not Found.'));;
+            $this->loginRedirect();
+
         $this->render('index');
     }
 
@@ -70,8 +71,9 @@ class DefaultController extends Controller {
     public function actionLogin() {
         $this->layout = '//layouts/login';
         if (!Yii::app()->user->isGuest) {
-            $this->goHome();
+            $this->loginRedirect();
         }
+
         $model = new LoginForm();
         $forgot_model = new LoginForm('forgotpass');
 
@@ -80,13 +82,7 @@ class DefaultController extends Controller {
         if (isset($_POST['LoginForm']) && !isset($_POST['forgot'])) {
             $model->attributes = $_POST['LoginForm'];
             if ($model->validate() && $model->login()):
-                if (UserIdentity::checkAdmin()) {
-                    $this->goHome();
-                } else {
-                    $timeline = Event::model()->active()->find();
-                    $re_url = ($timeline) ? array('/site/event/view', 'id' => $timeline->event_id) : array('/site/event/create');
-                    $this->redirect($re_url);
-                }
+                $this->loginRedirect();
             endif;
         } else if (isset($_POST['forgot'])) {
             $user = User::model()->findByAttributes(array('user_email' => $_POST['LoginForm']['email']));
@@ -123,6 +119,16 @@ class DefaultController extends Controller {
         }
 
         $this->render('login', array('model' => $model, 'forgot_model' => $forgot_model));
+    }
+
+    protected function loginRedirect() {
+        if (UserIdentity::checkAdmin()) {
+            $this->goHome();
+        } else {
+            $timeline = Event::model()->active()->mine()->find();
+            $re_url = ($timeline) ? array('/site/event/view', 'id' => $timeline->event_id) : array('/site/event/create');
+            $this->redirect($re_url);
+        }
     }
 
     public function actionReset($str, $id) {

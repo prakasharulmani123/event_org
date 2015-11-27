@@ -40,7 +40,7 @@ class EventController extends Controller {
 //                'users' => array('*'),
 //            ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('index', 'view', 'admin', 'pdf', 'download', 'addTabularInputsAsTable', 'getusers','vendors', 'vendorsdelete','create', 'update', 'delete', 'timelineupdate', 'notesupdate', 'updateVendor', 'getCategories'),
+                'actions' => array('index', 'view', 'admin', 'pdf', 'download', 'addTabularInputsAsTable', 'getusers', 'vendors', 'vendorsdelete', 'create', 'update', 'delete', 'timelineupdate', 'notesupdate', 'updateVendor', 'getCategories'),
                 'expression' => 'UserIdentity::checkAccess()',
                 'users' => array('@'),
             ),
@@ -109,6 +109,8 @@ class EventController extends Controller {
         $model->unsetAttributes();
         $model->evt_event_id = $id;
 
+        $userModel = new User('user_create');
+
         if (isset($_GET['EventVendors'])) {
             $model->attributes = $_GET['EventVendors'];
         }
@@ -120,7 +122,12 @@ class EventController extends Controller {
             $frmModel = new EventVendors;
         }
 
-        $this->performAjaxValidation($frmModel);
+        if (isset($_POST['ajax'])) {
+            if ($_POST['ajax'] === 'event-form')
+                $this->performAjaxValidation($frmModel);
+            elseif ($_POST['ajax'] === 'user-form')
+                $this->performAjaxValidation($userModel);
+        }
 
         if (isset($_POST['EventVendors'])) {
             $frmModel->attributes = $_POST['EventVendors'];
@@ -134,7 +141,32 @@ class EventController extends Controller {
             $this->refresh();
         }
 
-        $this->render('vendors', compact('event', 'model', 'frmModel'));
+        if (isset($_POST['User'])) {
+            $userModel->attributes = $_POST['User'];
+            if ($userModel->validate()):
+                $password = Myclass::getRandomString(9);
+                $userModel->password_hash = Myclass::encrypt($password);
+
+                $userModel->save(false);
+                if (!empty($userModel->user_email)):
+                    $mail = new Sendmail();
+                    $nextstep_url = Yii::app()->createAbsoluteUrl('/site/default/login');
+                    $subject = "Registraion Mail From - " . SITENAME;
+                    $trans_array = array(
+                        "{NAME}" => $userModel->user_firstname,
+                        "{USERNAME}" => $userModel->username,
+                        "{PASSWORD}" => $password,
+                        "{NEXTSTEPURL}" => $nextstep_url,
+                    );
+                    $message = $mail->getMessage('registration', $trans_array);
+                    $mail->send($userModel->user_email, $subject, $message);
+                    Yii::app()->user->setFlash('success', "{$userModel->user_firstname} vendor created successfully!!!");
+                    $this->refresh();
+                endif;
+            endif;
+        }
+
+        $this->render('vendors', compact('event', 'model', 'frmModel','userModel'));
     }
 
     /**
@@ -292,7 +324,7 @@ class EventController extends Controller {
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
         if (!isset($_GET['ajax'])) {
             Yii::app()->user->setFlash('success', 'Event Vendors Deleted Successfully!!!');
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('/site/event/vendors','id'=>$model->evt_event_id));
+            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('/site/event/vendors', 'id' => $model->evt_event_id));
         }
     }
 

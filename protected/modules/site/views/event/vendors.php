@@ -41,7 +41,7 @@
                     ),
                     'enableAjaxValidation' => true,
                 ));
-                $role_lists = CHtml::listData($event->eventlists, 'list_role', 'listRole.role_name');
+                $role_lists = Role::roleList();
                 echo $form->hiddenField($frmModel, 'evt_vendor');
                 ?>
                 <div class="form-group ">
@@ -64,8 +64,11 @@
                     <div class="col-lg-1">
                         <?php echo CHtml::submitButton('ADD', array('class' => 'btn btn-success', 'id' => 'add-edit')); ?>
                     </div>
-                    <div class="col-lg-2">
+                    <div class="col-lg-1">
                         <?php echo CHtml::resetButton('Cancel', array('class' => 'btn', 'onclick' => '$("#event-form").reset();')); ?>
+                    </div>
+                    <div class="col-lg-2">
+                        <?php echo CHtml::link('+ Add Vendor','#', array('id' => 'add-vendor', 'data-toggle' => 'modal', 'data-target' => '#addVendor','class'=>'pull-right')); ?>
                     </div>
                 </div>
                 <?php $this->endWidget(); ?>
@@ -90,7 +93,7 @@
                             'delete_vendor' => array(
                                 'url' => 'Yii::app()->createUrl("/site/event/vendorsdelete", array("id"=>$data->evt_vendor))',
                                 'label' => '<i class="glyphicon glyphicon-trash"></i>',
-                                'options' => array('title' => 'Delete', 'class' => 'delete','confirm' => "Are you sure want to delete?"),
+                                'options' => array('title' => 'Delete', 'class' => 'delete', 'confirm' => "Are you sure want to delete?"),
                             ),
                         ),
                     ),
@@ -111,6 +114,86 @@
         </section>
     </div>
 </div>
+
+<?php
+$this->beginWidget(
+        'booster.widgets.TbModal', array('id' => 'addVendor')
+);
+?>
+<div class="modal-header">
+    <a class="close" data-dismiss="modal">&times;</a>
+    <h4 id="modelTitle">Add Vendor</h4>
+</div>
+<div class="modal-body">
+    <?php
+    $form = $this->beginWidget('CActiveForm', array(
+        'id' => 'user-form',
+        'htmlOptions' => array('role' => 'form', 'class' => 'form-horizontal', "enctype" => "multipart/form-data"),
+        'clientOptions' => array(
+            'validateOnSubmit' => true,
+        ),
+        'enableAjaxValidation' => true,
+    ));
+    ?>
+    <div class="box-body">
+        <div class="form-group">
+            <?php echo $form->labelEx($userModel, 'username', array('class' => 'col-sm-3 control-label')); ?>
+            <div class="col-sm-5">
+                <?php echo $form->textField($userModel, 'username', array('class' => 'form-control', 'size' => 50, 'maxlength' => 50, 'readonly' => $userModel->isNewRecord ? false : true)); ?>
+                <?php echo $form->error($userModel, 'username'); ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <?php echo $form->labelEx($userModel, 'user_firstname', array('class' => 'col-sm-3 control-label')); ?>
+            <div class="col-sm-5">
+                <?php echo $form->textField($userModel, 'user_firstname', array('class' => 'form-control', 'size' => 50, 'maxlength' => 50)); ?>
+                <?php echo $form->error($userModel, 'user_firstname'); ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <?php echo $form->labelEx($userModel, 'user_lastname', array('class' => 'col-sm-3 control-label')); ?>
+            <div class="col-sm-5">
+                <?php echo $form->textField($userModel, 'user_lastname', array('class' => 'form-control', 'size' => 50, 'maxlength' => 50)); ?>
+                <?php echo $form->error($userModel, 'user_lastname'); ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <?php echo $form->labelEx($userModel, 'role_id', array('class' => 'col-sm-3 control-label')); ?>
+            <div class="col-sm-5">
+                <?php echo $form->dropDownList($userModel, 'role_id', Role::roleList(), array('class' => 'form-control','prompt'=>'Select Role')); ?>
+                <?php echo $form->error($userModel, 'role_id'); ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <?php echo $form->labelEx($userModel, 'user_email', array('class' => 'col-sm-3 control-label')); ?>
+            <div class="col-sm-5">
+                <?php echo $form->textField($userModel, 'user_email', array('class' => 'form-control', 'size' => 60, 'maxlength' => 100)); ?>
+                <?php echo $form->error($userModel, 'user_email'); ?>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <?php echo $form->labelEx($userModel, 'user_phone', array('class' => 'col-sm-3 control-label')); ?>
+            <div class="col-sm-5">
+                <?php echo $form->textField($userModel, 'user_phone', array('class' => 'form-control', 'size' => 50, 'maxlength' => 50)); ?>
+                <?php echo $form->error($userModel, 'user_phone'); ?>
+            </div>
+        </div>
+    </div><!-- /.box-body -->
+    <div class="box-footer">
+        <div class="form-group">
+            <div class="col-sm-0 col-sm-offset-4">
+                <?php echo CHtml::submitButton($userModel->isNewRecord ? 'Create' : 'Save', array('class' => $userModel->isNewRecord ? 'btn btn-success' : 'btn btn-success')); ?>
+            </div>
+        </div>
+    </div>
+    <?php $this->endWidget(); ?>
+</div>
+<?php $this->endWidget(); ?>
 
 <?php
 $cs = Yii::app()->getClientScript();

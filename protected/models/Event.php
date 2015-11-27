@@ -41,7 +41,7 @@ class Event extends RActiveRecord {
         $uid = Yii::app()->user->id;
         return array(
             'active' => array('condition' => "$alias.status = '1'"),
-            'mine' => array('with'=>array('eventVendors'),'condition' => "eventVendors.evt_user_id = '{$uid}'")
+            'mine' => array('with'=>array('eventVendors'),'condition' => "$alias.created_by = '{$uid}' OR eventVendors.evt_user_id = '{$uid}'")
         );
     }
 
