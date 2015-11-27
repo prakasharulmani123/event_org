@@ -1,5 +1,5 @@
 <?php
-$roles = Role::roleList();
+$roles = CHtml::listData($model->eventVendors,'evtUser.role.role_id','evtUser.role.role_name');
 $event_types = EventLists::eventtypes();
 ?>
 <div class="timeline-title m-bot15">

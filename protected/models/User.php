@@ -23,6 +23,7 @@
  * @property integer $modified_by
  *
  * The followings are the available model relations:
+ * @property EventVendors[] $eventVendors
  * @property Role $role
  */
 class User extends RActiveRecord {
@@ -74,6 +75,7 @@ class User extends RActiveRecord {
         // NOTE: you may need to adjust the relation name and the related
         // class name for the relations automatically generated below.
         return array(
+            'eventVendors' => array(self::HAS_MANY, 'EventVendors', 'evt_user_id'),
             'role' => array(self::BELONGS_TO, 'Role', 'role_id'),
         );
     }
