@@ -1,31 +1,42 @@
 <?php
-$roles = CHtml::listData($model->eventVendors,'evtUser.role.role_id','evtUser.role.role_name');
+$roles = CHtml::listData($model->eventVendors, 'evtUser.role.role_id', 'evtUser.role.role_name');
 $event_types = EventLists::eventtypes();
 ?>
 <div class="timeline-title m-bot15">
-    <h3>
+    <div class="col-sm-8">
+        <h3>
+            <?php
+            $this->widget('ext.editable.EditableField', array(
+                'model' => $model,
+                'attribute' => 'event_name',
+                'title' => 'Change Timeline',
+                'placement' => 'bottom',
+                'url' => $this->createUrl('/site/event/timelineupdate'),
+            ));
+            ?>
+        </h3>
+        <p class="timeline-date">
+            <?php
+            $this->widget('ext.editable.EditableField', array(
+                'type' => 'date',
+                'model' => $model,
+                'attribute' => 'event_date',
+                'title' => 'Change Timeline Date',
+                'placement' => 'bottom',
+                'url' => $this->createUrl('/site/event/timelineupdate'),
+            ));
+            ?>
+        </p>
+    </div>
+    <div class="col-sm-4 text-right mtop10">
         <?php
-        $this->widget('ext.editable.EditableField', array(
-            'model' => $model,
-            'attribute' => 'event_name',
-            'title' => 'Change Timeline',
-            'placement' => 'bottom',
-            'url' => $this->createUrl('/site/event/timelineupdate'),
-        ));
+        if ($model->created_by == Yii::app()->user->id) {
+            echo CHtml::link('<i class="fa fa-copy"></i> Duplicate', array('/site/event/duplicate', 'id' => $model->event_id), array('class' => 'btn-sm btn btn-success'));
+            echo '&nbsp;&nbsp;';
+            echo CHtml::link('<i class="fa fa-trash-o"></i> Delete', array('/site/event/delete', 'id' => $model->event_id), array('class' => 'btn-sm btn btn-success'));
+        }
         ?>
-    </h3>
-    <p class="timeline-date">
-        <?php
-        $this->widget('ext.editable.EditableField', array(
-            'type' => 'date',
-            'model' => $model,
-            'attribute' => 'event_date',
-            'title' => 'Change Timeline Date',
-            'placement' => 'bottom',
-            'url' => $this->createUrl('/site/event/timelineupdate'),
-        ));
-        ?>
-    </p>
+    </div>
 </div>
 <div class="row">
     <div class="col-lg-12">

@@ -28,17 +28,15 @@
             <li>
                 <a href="#" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
                     <?php
-                    $uAvatar = UPLOAD_DIR . str_replace("\\", "/", User::model()->findByPk(Yii::app()->user->id)->user_avatar);
+//                     if (!file_exists($uAvatar) || !is_file($uAvatar)) {
+//            $uAvatar = "{$this->themeUrl}/images/avatar5.png";
+//        } else {
+//            $uAvatar = $this->createUrl("/" . $uAvatar);
+//        }
+                    echo CHtml::image(User::model()->findByPk(Yii::app()->user->id)->avatar, Yii::app()->user->name, array());
 
-                    if (!file_exists($uAvatar) || !is_file($uAvatar)) {
-                        $uAvatar = "{$this->themeUrl}/images/avatar5.png";
-                    } else {
-                        $uAvatar = $this->createUrl("/" . $uAvatar);
-                    }
-
-                    echo CHtml::image($uAvatar, Yii::app()->user->name, array());
-
-                    echo ucfirst(Yii::app()->user->name); ?>
+                    echo ucfirst(Yii::app()->user->name);
+                    ?>
                     <span class="caret"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-usermenu pull-right">

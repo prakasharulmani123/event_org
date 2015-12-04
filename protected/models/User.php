@@ -40,6 +40,13 @@ class User extends RActiveRecord {
         return '{{user}}';
     }
 
+    public function scopes() {
+        $alias = $this->getTableAlias(false, FALSE);
+        return array(
+            'active' => array('condition' => "$alias.status = '1'"),
+        );
+    }
+
     /**
      * @return array validation rules for model attributes.
      */
@@ -168,6 +175,17 @@ class User extends RActiveRecord {
 
     public function getFullname() {
         return ucwords($this->user_firstname . ' ' . $this->user_lastname);
+    }
+
+    public function getAvatar() {
+        $uAvatar = UPLOAD_DIR . str_replace("\\", "/", $this->user_avatar);
+
+        if (!file_exists($uAvatar) || !is_file($uAvatar)) {
+            $uAvatar = "uploads/user/avatar5.png";
+        } else {
+            $uAvatar = $uAvatar;
+        }
+        return Yii::app()->baseUrl."/".$uAvatar;
     }
 
 }

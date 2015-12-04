@@ -40,7 +40,7 @@ class EventController extends Controller {
 //                'users' => array('*'),
 //            ),
             array('allow', // allow authenticated user to perform 'create' and 'update' actions
-                'actions' => array('index', 'view', 'admin', 'pdf', 'download', 'addTabularInputsAsTable', 'getusers', 'vendors', 'vendorsdelete', 'create', 'update', 'delete', 'timelineupdate', 'notesupdate', 'updateVendor', 'getCategories'),
+                'actions' => array('index', 'view', 'admin', 'pdf', 'download', 'addTabularInputsAsTable', 'getusers', 'vendors', 'vendorsdelete', 'create', 'update', 'delete', 'timelineupdate', 'notesupdate', 'updateVendor', 'getCategories', 'duplicate'),
                 'expression' => 'UserIdentity::checkAccess()',
                 'users' => array('@'),
             ),
@@ -160,13 +160,16 @@ class EventController extends Controller {
                     );
                     $message = $mail->getMessage('registration', $trans_array);
                     $mail->send($userModel->user_email, $subject, $message);
+                    $frmModel->evt_event_id = $id;
+                    $frmModel->evt_user_id = $userModel->user_id;
+                    $frmModel->save(false);
                     Yii::app()->user->setFlash('success', "{$userModel->user_firstname} vendor created successfully!!!");
                     $this->refresh();
                 endif;
             endif;
         }
 
-        $this->render('vendors', compact('event', 'model', 'frmModel','userModel'));
+        $this->render('vendors', compact('event', 'model', 'frmModel', 'userModel'));
     }
 
     /**
@@ -217,10 +220,45 @@ class EventController extends Controller {
         }
 
         // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
-        if (!isset($_GET['ajax'])) {
-            Yii::app()->user->setFlash('success', 'Event Deleted Successfully!!!');
-            $this->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('/site/event/index'));
+        Yii::app()->user->setFlash('success', 'Event Deleted Successfully!!!');
+        $timeline = Event::model()->active()->mine()->find();
+        $re_url = ($timeline) ? array('/site/event/view', 'id' => $timeline->event_id) : array('/site/event/create');
+        $this->redirect($re_url);
+    }
+
+    public function actionDuplicate($id) {
+        try {
+            $model = $this->loadModel($id);
+            $clone = new Event;
+            $clone->attributes = $model->attributes;
+            $clone->event_name = "Copy of " . $model->event_name;
+            $clone->save(false);
+            if ($model->eventlists) {
+                foreach ($model->eventlists as $evtList) {
+                    $list = new EventLists();
+                    $list->attributes = $evtList->attributes;
+                    $list->event_id = $clone->event_id;
+                    $list->save(false);
+                }
+            }
+            if ($model->eventVendors) {
+                foreach ($model->eventVendors as $evtVen) {
+                    $ven = new EventVendors();
+                    $ven->attributes = $evtVen->attributes;
+                    $ven->evt_event_id = $clone->event_id;
+                    $ven->save(false);
+                }
+            }
+        } catch (CDbException $e) {
+            if ($e->errorInfo[1] == 1451) {
+                throw new CHttpException(400, Yii::t('err', 'Relation Restriction Error.'));
+            } else {
+                throw $e;
+            }
         }
+
+        Yii::app()->user->setFlash('success', 'Event Duplicated Successfully!!!');
+        $this->redirect(array('/site/event/view', 'id' => $clone->event_id));
     }
 
     /**
